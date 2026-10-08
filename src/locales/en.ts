@@ -30,6 +30,8 @@ export const en = {
     cssShadow: "CSS Shadow & Glass",
     imageConverter: "Image Converter",
     openGraphGenerator: "Open Graph Generator",
+    jwtDecoder: "JWT Decoder",
+    colorContrast: "Color Contrast",
     about: "About",
     contact: "Contact",
     privacy: "Privacy Policy",
@@ -78,6 +80,16 @@ export const en = {
       title: "Meta Tags & Open Graph Generator",
       desc: "Generate social card meta tags for Facebook, Twitter/X, and Google Search with real-time live preview.",
       badge: "SEO / Marketing",
+    },
+    jwtDecoder: {
+      title: "JWT Decoder & Inspector",
+      desc: "Decode and inspect JSON Web Tokens in real-time: header, payload, signature, and expiry status — 100% client-side.",
+      badge: "Security / Auth",
+    },
+    colorContrast: {
+      title: "Color Contrast & WCAG Checker",
+      desc: "Calculate color contrast ratios and verify WCAG 2.1 AA/AAA accessibility compliance with live preview.",
+      badge: "Accessibility / UI",
     },
   },
   svgCleanerTool: {
@@ -342,6 +354,112 @@ export const en = {
       {
         question: "Where should I paste these generated meta tags?",
         answer: "Paste the generated HTML snippet inside the <head> ... </head> section of your web page or template header."
+      }
+    ]
+  },
+  jwtDecoderTool: {
+    title: "JWT Decoder & Inspector",
+    subtitle: "Decode JSON Web Tokens instantly — header, payload, signature, and expiry analysis. 100% Client-Side.",
+    inputLabel: "Paste JWT Token:",
+    inputPlaceholder: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    loadSample: "Load Sample",
+    clearBtn: "Clear",
+    errorFormat: "Invalid JWT format. Must contain 3 Base64URL segments separated by dots.",
+    errorDecode: "Failed to decode token. Ensure the segments are valid Base64URL.",
+    headerLabel: "Header",
+    payloadLabel: "Payload",
+    signatureLabel: "Signature",
+    signatureNote: "Encrypted — cannot be decoded client-side",
+    copyHeader: "Copy Header",
+    copyPayload: "Copy Payload",
+    statusActive: "Token Active",
+    statusExpired: "Token Expired",
+    expiresIn: "expires in",
+    expiredAgo: "expired",
+    issuedAt: "Issued At",
+    expiresAt: "Expires At",
+    notBefore: "Not Before",
+    parsedTimestamps: "Parsed Timestamps",
+    seoTitle: "JWT Security in Modern Web Development: What Developers Must Know",
+    seoContent1: "JSON Web Tokens (JWT) have become the dominant standard for stateless authentication and authorization in modern web APIs, microservices, and Single Page Applications. A JWT is a compact, URL-safe token composed of three Base64URL-encoded segments: the Header (algorithm and token type), the Payload (claims data), and the Signature (cryptographic verification string).",
+    seoContent2: "While JWTs are widely adopted, they introduce significant security risks when implemented incorrectly. Common vulnerabilities include the 'alg:none' attack (accepting unsigned tokens), weak secret keys susceptible to brute force, missing expiration claims (exp), and improper signature verification. Understanding the internal structure of your tokens is the first step toward secure implementation.",
+    seoContent3: "Our client-side JWT Decoder processes tokens entirely within your browser using the native Web Crypto API — your sensitive tokens are never transmitted to any server. Use this tool to inspect token claims, verify timestamp fields (iat, exp, nbf), detect expired tokens, and audit algorithm types during development and debugging workflows.",
+    features: [
+      "Real-time Base64URL decoding of header and payload JSON objects.",
+      "Automatic timestamp parsing for iat, exp, and nbf claims.",
+      "Visual Active/Expired token status with countdown display.",
+      "100% client-side — JWT secrets never leave your browser."
+    ],
+    faq: [
+      {
+        question: "Is it safe to paste my JWT into this decoder?",
+        answer: "Yes. This tool is 100% client-side. Your JWT never leaves your browser and is never sent to any server. However, avoid sharing JWTs containing sensitive production credentials with anyone."
+      },
+      {
+        question: "Can this tool verify the JWT signature?",
+        answer: "No. Signature verification requires the secret key or public certificate used during token signing. This tool only decodes the header and payload, which are Base64URL-encoded — not encrypted."
+      },
+      {
+        question: "What does the 'alg' field in the JWT header mean?",
+        answer: "The 'alg' field specifies the cryptographic algorithm used to sign the token, such as HS256 (HMAC SHA-256) or RS256 (RSA SHA-256). Always validate that the expected algorithm is used in your backend."
+      },
+      {
+        question: "What is the difference between iat, exp, and nbf claims?",
+        answer: "iat (Issued At) is the timestamp when the token was created. exp (Expiration) is when it becomes invalid. nbf (Not Before) defines the earliest time the token can be used."
+      },
+      {
+        question: "Why should JWT tokens have short expiration times?",
+        answer: "Short-lived JWTs reduce the risk window if a token is stolen. Combine short exp values with refresh token rotation for a secure, scalable authentication architecture."
+      }
+    ]
+  },
+  colorContrastTool: {
+    title: "Color Contrast & WCAG Checker",
+    subtitle: "Calculate contrast ratios and verify WCAG 2.1 AA/AAA compliance for accessible, inclusive UI design.",
+    textColorLabel: "Text Color (Foreground)",
+    bgColorLabel: "Background Color",
+    swapBtn: "Swap Colors",
+    presetsLabel: "Presets",
+    contrastRatioLabel: "Contrast Ratio",
+    copyRatioBtn: "Copy Ratio",
+    wcagTitle: "WCAG 2.1 Compliance",
+    wcagNormalText: "Normal Text",
+    wcagLargeText: "Large Text (18pt / 14pt Bold)",
+    wcagUI: "UI Components & Icons",
+    livePreviewTitle: "Live Preview",
+    previewSmallText: "Small Text (14–16px)",
+    previewLargeText: "Large Text (18pt+)",
+    previewUI: "UI Component",
+    seoTitle: "Web Accessibility & WCAG 2.1: Why Color Contrast Matters for Inclusive Design",
+    seoContent1: "Web Content Accessibility Guidelines (WCAG) 2.1 define the international standard for making digital content accessible to all users, including people with visual impairments, color blindness, and low vision. Color contrast ratio — the mathematical relationship between foreground text luminance and background color luminance — is one of the most critical WCAG success criteria for any web application or design system.",
+    seoContent2: "WCAG 2.1 defines three conformance levels. Level A represents baseline requirements, Level AA is the legal standard required in most jurisdictions including the EU (EN 301 549) and the US (ADA / Section 508), and Level AAA provides the highest accessibility guarantee. For normal text, AA requires a minimum contrast ratio of 4.5:1, while AAA requires 7:1. Large text (18pt or 14pt bold) is permitted a lower threshold of 3:1 for AA.",
+    seoContent3: "Our Color Contrast Checker performs the official WCAG relative luminance formula (sRGB linearization + weighted RGB coefficients) entirely in your browser, providing instant Pass/Fail results for all WCAG 2.1 criteria. Use it during design system creation, component library audits, and pre-launch accessibility reviews to ensure your products are usable by the widest possible audience.",
+    features: [
+      "Calculates relative luminance and contrast ratio using the official WCAG 2.1 algorithm.",
+      "Supports HEX, RGB, and HSL color input with bi-directional synchronization.",
+      "Live preview with Small Text, Large Text, and UI Component examples.",
+      "Instant Pass/Fail for WCAG 2.1 AA and AAA conformance levels."
+    ],
+    faq: [
+      {
+        question: "What is a good contrast ratio for web accessibility?",
+        answer: "WCAG 2.1 AA requires 4.5:1 for normal text and 3:1 for large text (18pt+). Aim for 7:1 (AAA) for maximum readability across all user conditions."
+      },
+      {
+        question: "Does color contrast only affect users with visual impairments?",
+        answer: "No. Poor contrast affects all users, especially in bright sunlight, on low-quality screens, or when experiencing eye fatigue. High contrast improves readability universally."
+      },
+      {
+        question: "What is the difference between WCAG AA and AAA?",
+        answer: "AA (Level 2) is the legally required standard in most countries. AAA (Level 3) provides the highest guarantee and is recommended for critical content like medical or legal information."
+      },
+      {
+        question: "How is the contrast ratio calculated?",
+        answer: "WCAG defines contrast ratio as (L1 + 0.05) / (L2 + 0.05) where L1 is the relative luminance of the lighter color and L2 of the darker. Luminance uses sRGB gamma linearization."
+      },
+      {
+        question: "Do UI components need the same contrast as text?",
+        answer: "UI components (borders, icons, focus indicators) require a minimum 3:1 contrast ratio against adjacent colors under WCAG 2.1 SC 1.4.11 (Non-text Contrast)."
       }
     ]
   },
