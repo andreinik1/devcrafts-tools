@@ -99,31 +99,31 @@ export const SvgCleanerTool: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Header Info */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-2xl bg-slate-900/40 border border-slate-800 backdrop-blur-md">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-2xl bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 backdrop-blur-md shadow-sm transition-colors duration-200">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-100 tracking-tight flex items-center gap-3">
-            <Sparkles className="w-7 h-7 text-cyan-400" />
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight flex items-center gap-3">
+            <Sparkles className="w-7 h-7 text-cyan-500 dark:text-cyan-400" />
             {t.svgCleanerTool.title}
           </h1>
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
             {t.svgCleanerTool.subtitle}
           </p>
         </div>
 
         {/* Stats Pill */}
         {result.originalSize > 0 && (
-          <div className="flex items-center gap-4 px-4 py-3 rounded-xl bg-slate-950/80 border border-slate-800 text-xs">
+          <div className="flex flex-wrap items-center gap-4 px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-950/80 border border-slate-200 dark:border-slate-800 text-xs">
             <div>
-              <div className="text-slate-400">{t.svgCleanerTool.statsOriginal}</div>
-              <div className="font-mono text-slate-200">{result.originalSize} B</div>
+              <div className="text-slate-500 dark:text-slate-400">{t.svgCleanerTool.statsOriginal}</div>
+              <div className="font-mono text-slate-900 dark:text-slate-200">{result.originalSize} B</div>
             </div>
-            <div className="h-6 w-px bg-slate-800" />
+            <div className="h-6 w-px bg-slate-300 dark:bg-slate-800" />
             <div>
-              <div className="text-slate-400">{t.svgCleanerTool.statsCleaned}</div>
-              <div className="font-mono text-emerald-400">{result.cleanedSize} B</div>
+              <div className="text-slate-500 dark:text-slate-400">{t.svgCleanerTool.statsCleaned}</div>
+              <div className="font-mono text-emerald-600 dark:text-emerald-400 font-bold">{result.cleanedSize} B</div>
             </div>
-            <div className="h-6 w-px bg-slate-800" />
-            <div className="px-2 py-1 rounded bg-emerald-500/20 text-emerald-400 font-bold">
+            <div className="h-6 w-px bg-slate-300 dark:bg-slate-800" />
+            <div className="px-2 py-1 rounded bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 font-bold">
               -{result.savingsPercentage}%
             </div>
           </div>
@@ -138,7 +138,7 @@ export const SvgCleanerTool: React.FC = () => {
           <div
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleDrop}
-            className="relative border-2 border-dashed border-slate-800 hover:border-cyan-500/50 rounded-2xl p-6 bg-slate-900/20 text-center transition-all group"
+            className="relative border-2 border-dashed border-slate-300 dark:border-slate-800 hover:border-cyan-500/50 rounded-2xl p-6 bg-white/50 dark:bg-slate-900/20 text-center transition-all group cursor-pointer"
           >
             <input
               type="file"
@@ -147,10 +147,10 @@ export const SvgCleanerTool: React.FC = () => {
               className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
             />
             <div className="flex flex-col items-center gap-2">
-              <div className="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 group-hover:scale-110 transition-transform">
+              <div className="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-500 dark:text-cyan-400 group-hover:scale-110 transition-transform">
                 <Upload className="w-6 h-6" />
               </div>
-              <span className="text-sm font-medium text-slate-300">
+              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
                 {t.svgCleanerTool.dropzoneText}
               </span>
             </div>
@@ -158,12 +158,12 @@ export const SvgCleanerTool: React.FC = () => {
 
           {/* Paste Textarea */}
           <div className="space-y-2">
-            <div className="flex items-center justify-between text-xs text-slate-400 font-medium">
+            <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400 font-medium">
               <span>{t.svgCleanerTool.pasteLabel}</span>
               <button
                 type="button"
                 onClick={() => setInputSvg('')}
-                className="flex items-center gap-1 text-slate-400 hover:text-rose-400 transition-colors"
+                className="flex items-center gap-1 text-slate-500 hover:text-rose-500 transition-colors cursor-pointer"
               >
                 <Trash2 className="w-3.5 h-3.5" />
                 <span>{t.common.clear}</span>
@@ -173,48 +173,48 @@ export const SvgCleanerTool: React.FC = () => {
               value={inputSvg}
               onChange={(e) => setInputSvg(e.target.value)}
               rows={8}
-              className="w-full font-mono text-xs bg-slate-950 border border-slate-800 rounded-xl p-4 text-slate-200 focus:border-cyan-500/60 focus:ring-1 focus:ring-cyan-500/60 outline-none resize-none"
+              className="w-full font-mono text-xs bg-slate-900 dark:bg-slate-950 border border-slate-700 dark:border-slate-800 rounded-xl p-4 text-slate-100 focus:border-cyan-500 outline-none resize-none overflow-x-auto"
               placeholder="<svg ...></svg>"
             />
           </div>
 
           {/* Options Toggles */}
-          <div className="p-5 rounded-2xl bg-slate-900/30 border border-slate-800 space-y-3">
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+          <div className="p-5 rounded-2xl bg-white/80 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 space-y-3 shadow-sm transition-colors duration-200">
+            <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               {t.svgCleanerTool.cleanOptions}
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              <label className="flex items-center gap-2 text-slate-300 cursor-pointer">
+              <label className="flex items-center gap-2 text-slate-700 dark:text-slate-300 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={options.removeComments}
                   onChange={(e) => setOptions({ ...options, removeComments: e.target.checked })}
-                  className="rounded border-slate-700 bg-slate-950 text-cyan-500 focus:ring-cyan-500"
+                  className="rounded border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-950 text-cyan-500 focus:ring-cyan-500"
                 />
                 <span>{t.svgCleanerTool.removeComments}</span>
               </label>
 
-              <label className="flex items-center gap-2 text-slate-300 cursor-pointer">
+              <label className="flex items-center gap-2 text-slate-700 dark:text-slate-300 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={options.removeMetadata}
                   onChange={(e) => setOptions({ ...options, removeMetadata: e.target.checked })}
-                  className="rounded border-slate-700 bg-slate-950 text-cyan-500 focus:ring-cyan-500"
+                  className="rounded border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-950 text-cyan-500 focus:ring-cyan-500"
                 />
                 <span>{t.svgCleanerTool.removeMetadata}</span>
               </label>
 
-              <label className="flex items-center gap-2 text-slate-300 cursor-pointer">
+              <label className="flex items-center gap-2 text-slate-700 dark:text-slate-300 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={options.removeDimensions}
                   onChange={(e) => setOptions({ ...options, removeDimensions: e.target.checked })}
-                  className="rounded border-slate-700 bg-slate-950 text-cyan-500 focus:ring-cyan-500"
+                  className="rounded border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-950 text-cyan-500 focus:ring-cyan-500"
                 />
                 <span>{t.svgCleanerTool.removeDimensions}</span>
               </label>
 
-              <label className="flex items-center gap-2 text-slate-300 cursor-pointer">
+              <label className="flex items-center gap-2 text-slate-700 dark:text-slate-300 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={options.minifyCode}
@@ -225,12 +225,12 @@ export const SvgCleanerTool: React.FC = () => {
                       prettifyCode: e.target.checked ? false : options.prettifyCode,
                     })
                   }
-                  className="rounded border-slate-700 bg-slate-950 text-cyan-500 focus:ring-cyan-500"
+                  className="rounded border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-950 text-cyan-500 focus:ring-cyan-500"
                 />
                 <span>{t.svgCleanerTool.minifyCode}</span>
               </label>
 
-              <label className="flex items-center gap-2 text-slate-300 cursor-pointer">
+              <label className="flex items-center gap-2 text-slate-700 dark:text-slate-300 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={options.prettifyCode}
@@ -241,7 +241,7 @@ export const SvgCleanerTool: React.FC = () => {
                       minifyCode: e.target.checked ? false : options.minifyCode,
                     })
                   }
-                  className="rounded border-slate-700 bg-slate-950 text-cyan-500 focus:ring-cyan-500"
+                  className="rounded border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-950 text-cyan-500 focus:ring-cyan-500"
                 />
                 <span>{t.svgCleanerTool.prettifyCode}</span>
               </label>
@@ -253,14 +253,14 @@ export const SvgCleanerTool: React.FC = () => {
         <div className="space-y-4 flex flex-col justify-between">
           <div>
             {/* Tabs */}
-            <div className="flex items-center gap-2 border-b border-slate-800 pb-2">
+            <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-2">
               <button
                 type="button"
                 onClick={() => setActiveTab('clean')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                   activeTab === 'clean'
-                    ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/40'
-                    : 'text-slate-400 hover:text-slate-200'
+                    ? 'bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 border border-cyan-500/40 shadow-sm'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                 }`}
               >
                 <Code2 className="w-4 h-4" />
@@ -270,10 +270,10 @@ export const SvgCleanerTool: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setActiveTab('dataUri')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                   activeTab === 'dataUri'
-                    ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/40'
-                    : 'text-slate-400 hover:text-slate-200'
+                    ? 'bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 border border-cyan-500/40 shadow-sm'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                 }`}
               >
                 <Layers className="w-4 h-4" />
@@ -283,10 +283,10 @@ export const SvgCleanerTool: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setActiveTab('react')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                   activeTab === 'react'
-                    ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/40'
-                    : 'text-slate-400 hover:text-slate-200'
+                    ? 'bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 border border-cyan-500/40 shadow-sm'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
                 }`}
               >
                 <FileCode className="w-4 h-4" />
@@ -295,10 +295,10 @@ export const SvgCleanerTool: React.FC = () => {
             </div>
 
             {/* Visual Preview Box */}
-            <div className="mt-4 p-4 rounded-xl bg-slate-950/60 border border-slate-800 flex items-center justify-center min-h-[120px]">
+            <div className="mt-4 p-4 rounded-xl bg-slate-100 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 flex items-center justify-center min-h-[120px]">
               {result.cleanedSvg ? (
                 <div
-                  className="w-20 h-20 flex items-center justify-center text-cyan-400 [&>svg]:w-full [&>svg]:h-full"
+                  className="w-20 h-20 flex items-center justify-center text-cyan-600 dark:text-cyan-400 [&>svg]:w-full [&>svg]:h-full"
                   dangerouslySetInnerHTML={{ __html: result.cleanedSvg }}
                 />
               ) : (
@@ -307,12 +307,12 @@ export const SvgCleanerTool: React.FC = () => {
             </div>
 
             {/* Code Output Textarea */}
-            <div className="mt-4 relative">
+            <div className="mt-4 relative overflow-x-auto">
               <textarea
                 readOnly
                 value={currentOutputText}
                 rows={10}
-                className="w-full font-mono text-xs bg-slate-950 border border-slate-800 rounded-xl p-4 text-emerald-400 outline-none resize-none select-all"
+                className="w-full font-mono text-xs bg-slate-900 dark:bg-slate-950 border border-slate-700 dark:border-slate-800 rounded-xl p-4 text-emerald-400 outline-none resize-none select-all overflow-x-auto"
               />
             </div>
           </div>
@@ -322,7 +322,7 @@ export const SvgCleanerTool: React.FC = () => {
             <button
               type="button"
               onClick={() => copyToClipboard(currentOutputText)}
-              className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-sm shadow-lg shadow-cyan-500/20 transition-all"
+              className="flex-1 flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-sm shadow-lg shadow-cyan-500/20 transition-all cursor-pointer"
             >
               <Copy className="w-4 h-4" />
               <span>{t.common.copy}</span>
@@ -331,7 +331,7 @@ export const SvgCleanerTool: React.FC = () => {
             <button
               type="button"
               onClick={() => downloadFile(result.cleanedSvg, 'clean-icon.svg', 'image/svg+xml')}
-              className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-slate-900 border border-slate-700 hover:bg-slate-800 text-slate-200 font-semibold text-sm transition-all"
+              className="flex items-center justify-center gap-2 px-5 py-3.5 rounded-xl bg-slate-200 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 hover:bg-slate-300 dark:hover:bg-slate-800 text-slate-900 dark:text-slate-200 font-semibold text-sm transition-all cursor-pointer"
             >
               <Download className="w-4 h-4" />
               <span>{t.common.download}</span>
@@ -342,3 +342,4 @@ export const SvgCleanerTool: React.FC = () => {
     </div>
   );
 };
+

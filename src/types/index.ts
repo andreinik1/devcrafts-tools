@@ -1,4 +1,5 @@
-export type Language = 'en' | 'uk';
+export type Language = 'en' | 'uk' | 'ru';
+export type Theme = 'dark' | 'light';
 
 export interface ToolInfo {
   id: string;

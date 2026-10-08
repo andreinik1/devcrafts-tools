@@ -55,12 +55,12 @@ export const CssShadowTool: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Tool Header */}
-      <div className="p-6 rounded-2xl bg-slate-900/40 border border-slate-800 backdrop-blur-md">
-        <h1 className="text-2xl sm:text-3xl font-bold text-slate-100 tracking-tight flex items-center gap-3">
-          <Layers className="w-7 h-7 text-cyan-400" />
+      <div className="p-6 rounded-2xl bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 backdrop-blur-md shadow-sm transition-colors duration-200">
+        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-slate-100 tracking-tight flex items-center gap-3">
+          <Layers className="w-7 h-7 text-cyan-500 dark:text-cyan-400" />
           {t.cssShadowTool.title}
         </h1>
-        <p className="text-sm text-slate-400 mt-1">
+        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
           {t.cssShadowTool.subtitle}
         </p>
       </div>
@@ -70,10 +70,10 @@ export const CssShadowTool: React.FC = () => {
         <button
           type="button"
           onClick={() => setActiveMode('shadow')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs transition-all ${
+          className={`flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-xs transition-all cursor-pointer ${
             activeMode === 'shadow'
               ? 'bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20'
-              : 'bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800'
+              : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
           <Sliders className="w-4 h-4" />
@@ -83,10 +83,10 @@ export const CssShadowTool: React.FC = () => {
         <button
           type="button"
           onClick={() => setActiveMode('glass')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-xs transition-all ${
+          className={`flex items-center gap-2 px-5 py-3 rounded-xl font-semibold text-xs transition-all cursor-pointer ${
             activeMode === 'glass'
               ? 'bg-cyan-500 text-slate-950 shadow-lg shadow-cyan-500/20'
-              : 'bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800'
+              : 'bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
           }`}
         >
           <Sparkles className="w-4 h-4" />
@@ -100,9 +100,9 @@ export const CssShadowTool: React.FC = () => {
         <div className="space-y-6">
           {activeMode === 'shadow' ? (
             /* Box Shadow Sliders */
-            <div className="p-6 rounded-2xl bg-slate-900/30 border border-slate-800 space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+            <div className="p-6 rounded-2xl bg-white/80 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 space-y-4 shadow-sm transition-colors duration-200">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <span className="text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                   Shadow Controls
                 </span>
                 {/* Presets */}
@@ -111,7 +111,7 @@ export const CssShadowTool: React.FC = () => {
                     const preset = SHADOW_PRESETS.find((p) => p.name === e.target.value);
                     if (preset) setShadowConfig(preset.config);
                   }}
-                  className="bg-slate-950 border border-slate-800 text-slate-300 text-xs rounded-lg px-2.5 py-1 outline-none"
+                  className="bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-800 dark:text-slate-300 text-xs rounded-lg px-3 py-1.5 outline-none cursor-pointer"
                 >
                   <option value="">{t.cssShadowTool.presetLabel}</option>
                   {SHADOW_PRESETS.map((p) => (
@@ -124,9 +124,9 @@ export const CssShadowTool: React.FC = () => {
 
               {/* Offset X */}
               <div className="space-y-1 text-xs">
-                <div className="flex justify-between text-slate-400">
+                <div className="flex justify-between text-slate-600 dark:text-slate-400">
                   <span>{t.cssShadowTool.offsetX}</span>
-                  <span className="font-mono text-cyan-400">{shadowConfig.offsetX}px</span>
+                  <span className="font-mono text-cyan-600 dark:text-cyan-400 font-bold">{shadowConfig.offsetX}px</span>
                 </div>
                 <input
                   type="range"
@@ -134,15 +134,15 @@ export const CssShadowTool: React.FC = () => {
                   max="50"
                   value={shadowConfig.offsetX}
                   onChange={(e) => setShadowConfig({ ...shadowConfig, offsetX: Number(e.target.value) })}
-                  className="w-full accent-cyan-400 cursor-pointer"
+                  className="w-full accent-cyan-500 cursor-pointer"
                 />
               </div>
 
               {/* Offset Y */}
               <div className="space-y-1 text-xs">
-                <div className="flex justify-between text-slate-400">
+                <div className="flex justify-between text-slate-600 dark:text-slate-400">
                   <span>{t.cssShadowTool.offsetY}</span>
-                  <span className="font-mono text-cyan-400">{shadowConfig.offsetY}px</span>
+                  <span className="font-mono text-cyan-600 dark:text-cyan-400 font-bold">{shadowConfig.offsetY}px</span>
                 </div>
                 <input
                   type="range"
@@ -150,15 +150,15 @@ export const CssShadowTool: React.FC = () => {
                   max="50"
                   value={shadowConfig.offsetY}
                   onChange={(e) => setShadowConfig({ ...shadowConfig, offsetY: Number(e.target.value) })}
-                  className="w-full accent-cyan-400 cursor-pointer"
+                  className="w-full accent-cyan-500 cursor-pointer"
                 />
               </div>
 
               {/* Blur Radius */}
               <div className="space-y-1 text-xs">
-                <div className="flex justify-between text-slate-400">
+                <div className="flex justify-between text-slate-600 dark:text-slate-400">
                   <span>{t.cssShadowTool.blurRadius}</span>
-                  <span className="font-mono text-cyan-400">{shadowConfig.blur}px</span>
+                  <span className="font-mono text-cyan-600 dark:text-cyan-400 font-bold">{shadowConfig.blur}px</span>
                 </div>
                 <input
                   type="range"
@@ -166,15 +166,15 @@ export const CssShadowTool: React.FC = () => {
                   max="100"
                   value={shadowConfig.blur}
                   onChange={(e) => setShadowConfig({ ...shadowConfig, blur: Number(e.target.value) })}
-                  className="w-full accent-cyan-400 cursor-pointer"
+                  className="w-full accent-cyan-500 cursor-pointer"
                 />
               </div>
 
               {/* Spread Radius */}
               <div className="space-y-1 text-xs">
-                <div className="flex justify-between text-slate-400">
+                <div className="flex justify-between text-slate-600 dark:text-slate-400">
                   <span>{t.cssShadowTool.spreadRadius}</span>
-                  <span className="font-mono text-cyan-400">{shadowConfig.spread}px</span>
+                  <span className="font-mono text-cyan-600 dark:text-cyan-400 font-bold">{shadowConfig.spread}px</span>
                 </div>
                 <input
                   type="range"
@@ -182,15 +182,15 @@ export const CssShadowTool: React.FC = () => {
                   max="50"
                   value={shadowConfig.spread}
                   onChange={(e) => setShadowConfig({ ...shadowConfig, spread: Number(e.target.value) })}
-                  className="w-full accent-cyan-400 cursor-pointer"
+                  className="w-full accent-cyan-500 cursor-pointer"
                 />
               </div>
 
               {/* Opacity */}
               <div className="space-y-1 text-xs">
-                <div className="flex justify-between text-slate-400">
+                <div className="flex justify-between text-slate-600 dark:text-slate-400">
                   <span>Shadow Opacity</span>
-                  <span className="font-mono text-cyan-400">{Math.round(shadowConfig.opacity * 100)}%</span>
+                  <span className="font-mono text-cyan-600 dark:text-cyan-400 font-bold">{Math.round(shadowConfig.opacity * 100)}%</span>
                 </div>
                 <input
                   type="range"
@@ -199,13 +199,13 @@ export const CssShadowTool: React.FC = () => {
                   step="0.01"
                   value={shadowConfig.opacity}
                   onChange={(e) => setShadowConfig({ ...shadowConfig, opacity: Number(e.target.value) })}
-                  className="w-full accent-cyan-400 cursor-pointer"
+                  className="w-full accent-cyan-500 cursor-pointer"
                 />
               </div>
 
               {/* Color Picker & Inset */}
               <div className="flex items-center justify-between pt-2">
-                <div className="flex items-center gap-2 text-xs text-slate-300">
+                <div className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300">
                   <span>{t.cssShadowTool.shadowColor}</span>
                   <input
                     type="color"
@@ -215,12 +215,12 @@ export const CssShadowTool: React.FC = () => {
                   />
                 </div>
 
-                <label className="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+                <label className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={shadowConfig.inset}
                     onChange={(e) => setShadowConfig({ ...shadowConfig, inset: e.target.checked })}
-                    className="rounded border-slate-700 bg-slate-950 text-cyan-500"
+                    className="rounded border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-950 text-cyan-500"
                   />
                   <span>{t.cssShadowTool.insetShadow}</span>
                 </label>
@@ -228,9 +228,9 @@ export const CssShadowTool: React.FC = () => {
             </div>
           ) : (
             /* Glassmorphism Sliders */
-            <div className="p-6 rounded-2xl bg-slate-900/30 border border-slate-800 space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+            <div className="p-6 rounded-2xl bg-white/80 dark:bg-slate-900/30 border border-slate-200 dark:border-slate-800 space-y-4 shadow-sm transition-colors duration-200">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <span className="text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                   Glassmorphism Controls
                 </span>
                 <select
@@ -238,7 +238,7 @@ export const CssShadowTool: React.FC = () => {
                     const preset = GLASS_PRESETS.find((p) => p.name === e.target.value);
                     if (preset) setGlassConfig(preset.config);
                   }}
-                  className="bg-slate-950 border border-slate-800 text-slate-300 text-xs rounded-lg px-2.5 py-1 outline-none"
+                  className="bg-slate-100 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-800 dark:text-slate-300 text-xs rounded-lg px-3 py-1.5 outline-none cursor-pointer"
                 >
                   <option value="">{t.cssShadowTool.presetLabel}</option>
                   {GLASS_PRESETS.map((p) => (
@@ -251,9 +251,9 @@ export const CssShadowTool: React.FC = () => {
 
               {/* Background Opacity */}
               <div className="space-y-1 text-xs">
-                <div className="flex justify-between text-slate-400">
+                <div className="flex justify-between text-slate-600 dark:text-slate-400">
                   <span>{t.cssShadowTool.glassBgOpacity}</span>
-                  <span className="font-mono text-cyan-400">{Math.round(glassConfig.bgOpacity * 100)}%</span>
+                  <span className="font-mono text-cyan-600 dark:text-cyan-400 font-bold">{Math.round(glassConfig.bgOpacity * 100)}%</span>
                 </div>
                 <input
                   type="range"
@@ -262,15 +262,15 @@ export const CssShadowTool: React.FC = () => {
                   step="0.01"
                   value={glassConfig.bgOpacity}
                   onChange={(e) => setGlassConfig({ ...glassConfig, bgOpacity: Number(e.target.value) })}
-                  className="w-full accent-cyan-400 cursor-pointer"
+                  className="w-full accent-cyan-500 cursor-pointer"
                 />
               </div>
 
               {/* Backdrop Blur */}
               <div className="space-y-1 text-xs">
-                <div className="flex justify-between text-slate-400">
+                <div className="flex justify-between text-slate-600 dark:text-slate-400">
                   <span>{t.cssShadowTool.glassBlur}</span>
-                  <span className="font-mono text-cyan-400">{glassConfig.blur}px</span>
+                  <span className="font-mono text-cyan-600 dark:text-cyan-400 font-bold">{glassConfig.blur}px</span>
                 </div>
                 <input
                   type="range"
@@ -278,15 +278,15 @@ export const CssShadowTool: React.FC = () => {
                   max="40"
                   value={glassConfig.blur}
                   onChange={(e) => setGlassConfig({ ...glassConfig, blur: Number(e.target.value) })}
-                  className="w-full accent-cyan-400 cursor-pointer"
+                  className="w-full accent-cyan-500 cursor-pointer"
                 />
               </div>
 
               {/* Border Opacity */}
               <div className="space-y-1 text-xs">
-                <div className="flex justify-between text-slate-400">
+                <div className="flex justify-between text-slate-600 dark:text-slate-400">
                   <span>{t.cssShadowTool.glassBorderOpacity}</span>
-                  <span className="font-mono text-cyan-400">{Math.round(glassConfig.borderOpacity * 100)}%</span>
+                  <span className="font-mono text-cyan-600 dark:text-cyan-400 font-bold">{Math.round(glassConfig.borderOpacity * 100)}%</span>
                 </div>
                 <input
                   type="range"
@@ -295,15 +295,15 @@ export const CssShadowTool: React.FC = () => {
                   step="0.01"
                   value={glassConfig.borderOpacity}
                   onChange={(e) => setGlassConfig({ ...glassConfig, borderOpacity: Number(e.target.value) })}
-                  className="w-full accent-cyan-400 cursor-pointer"
+                  className="w-full accent-cyan-500 cursor-pointer"
                 />
               </div>
 
               {/* Border Width */}
               <div className="space-y-1 text-xs">
-                <div className="flex justify-between text-slate-400">
+                <div className="flex justify-between text-slate-600 dark:text-slate-400">
                   <span>{t.cssShadowTool.glassBorderWidth}</span>
-                  <span className="font-mono text-cyan-400">{glassConfig.borderWidth}px</span>
+                  <span className="font-mono text-cyan-600 dark:text-cyan-400 font-bold">{glassConfig.borderWidth}px</span>
                 </div>
                 <input
                   type="range"
@@ -311,7 +311,7 @@ export const CssShadowTool: React.FC = () => {
                   max="10"
                   value={glassConfig.borderWidth}
                   onChange={(e) => setGlassConfig({ ...glassConfig, borderWidth: Number(e.target.value) })}
-                  className="w-full accent-cyan-400 cursor-pointer"
+                  className="w-full accent-cyan-500 cursor-pointer"
                 />
               </div>
             </div>
@@ -322,15 +322,15 @@ export const CssShadowTool: React.FC = () => {
         <div className="space-y-6 flex flex-col justify-between">
           <div className="space-y-4">
             {/* Preview Box Controls */}
-            <div className="flex items-center justify-between text-xs text-slate-400 font-semibold uppercase">
+            <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400 font-semibold uppercase">
               <span className="flex items-center gap-1.5">
-                <Eye className="w-4 h-4 text-cyan-400" />
+                <Eye className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
                 {t.cssShadowTool.previewBoxTitle}
               </span>
               <button
                 type="button"
                 onClick={() => setCanvasBg(canvasBg === 'dark' ? 'light' : 'dark')}
-                className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-cyan-400 text-xs"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:text-cyan-600 dark:hover:text-cyan-400 text-xs font-medium cursor-pointer"
               >
                 {canvasBg === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
                 <span>Canvas: {canvasBg}</span>
@@ -339,7 +339,7 @@ export const CssShadowTool: React.FC = () => {
 
             {/* Canvas */}
             <div
-              className={`relative h-64 rounded-2xl border border-slate-800 flex items-center justify-center p-6 overflow-hidden transition-colors ${
+              className={`relative h-64 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-center p-6 overflow-hidden transition-colors ${
                 canvasBg === 'dark'
                   ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100'
                   : 'bg-gradient-to-br from-slate-100 via-slate-200 to-slate-300 text-slate-900'
@@ -366,7 +366,7 @@ export const CssShadowTool: React.FC = () => {
                 }
                 className="relative z-10 w-52 h-32 rounded-2xl flex flex-col items-center justify-center text-center p-4 transition-all"
               >
-                <span className="font-bold text-sm tracking-tight">DevCraft UI Card</span>
+                <span className="font-bold text-sm tracking-tight">VibeDev UI Card</span>
                 <span className="text-[11px] opacity-80 mt-1 font-mono">
                   {activeMode === 'shadow' ? 'Box Shadow' : 'Backdrop Blur'}
                 </span>
@@ -376,11 +376,11 @@ export const CssShadowTool: React.FC = () => {
             {/* Generated CSS Code Output */}
             <div className="space-y-3">
               <div>
-                <span className="text-xs text-slate-400 font-medium block mb-1">
+                <span className="text-xs text-slate-600 dark:text-slate-400 font-medium block mb-1">
                   {t.cssShadowTool.outputCss}
                 </span>
-                <div className="flex items-center gap-2 p-3 rounded-xl bg-slate-950 border border-slate-800 font-mono text-xs text-emerald-400">
-                  <span className="flex-1 overflow-x-auto">
+                <div className="flex items-center gap-2 p-3 rounded-xl bg-slate-900 dark:bg-slate-950 border border-slate-700 dark:border-slate-800 font-mono text-xs text-emerald-400">
+                  <span className="flex-1 overflow-x-auto font-mono whitespace-nowrap">
                     {activeMode === 'shadow' ? shadowResult.css : glassResult.css}
                   </span>
                   <button
@@ -388,7 +388,7 @@ export const CssShadowTool: React.FC = () => {
                     onClick={() =>
                       copyToClipboard(activeMode === 'shadow' ? shadowResult.css : glassResult.css)
                     }
-                    className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20"
+                    className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500/20 cursor-pointer shrink-0"
                   >
                     <Copy className="w-3.5 h-3.5" />
                   </button>
@@ -396,11 +396,11 @@ export const CssShadowTool: React.FC = () => {
               </div>
 
               <div>
-                <span className="text-xs text-slate-400 font-medium block mb-1">
+                <span className="text-xs text-slate-600 dark:text-slate-400 font-medium block mb-1">
                   {t.cssShadowTool.outputTailwind}
                 </span>
-                <div className="flex items-center gap-2 p-3 rounded-xl bg-slate-950 border border-slate-800 font-mono text-xs text-cyan-300">
-                  <span className="flex-1 overflow-x-auto">
+                <div className="flex items-center gap-2 p-3 rounded-xl bg-slate-900 dark:bg-slate-950 border border-slate-700 dark:border-slate-800 font-mono text-xs text-cyan-400 dark:text-cyan-300">
+                  <span className="flex-1 overflow-x-auto font-mono whitespace-nowrap">
                     {activeMode === 'shadow' ? shadowResult.tailwind : glassResult.tailwind}
                   </span>
                   <button
@@ -410,7 +410,7 @@ export const CssShadowTool: React.FC = () => {
                         activeMode === 'shadow' ? shadowResult.tailwind : glassResult.tailwind
                       )
                     }
-                    className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20"
+                    className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 cursor-pointer shrink-0"
                   >
                     <Copy className="w-3.5 h-3.5" />
                   </button>
@@ -423,3 +423,4 @@ export const CssShadowTool: React.FC = () => {
     </div>
   );
 };
+

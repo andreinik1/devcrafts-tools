@@ -21,69 +21,69 @@ export const ContactPage: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-10">
       <div className="text-center space-y-3">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-mono">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400 text-xs font-mono">
           <MessageSquare className="w-3.5 h-3.5" />
           <span>Feedback & Support</span>
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-100 tracking-tight">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
           {t.contact.title}
         </h1>
-        <p className="text-base text-slate-400 max-w-xl mx-auto">
+        <p className="text-base text-slate-600 dark:text-slate-400 max-w-xl mx-auto">
           {t.contact.subtitle}
         </p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Form */}
-        <div className="md:col-span-2 p-6 sm:p-8 rounded-2xl bg-slate-900/40 border border-slate-800 backdrop-blur-md">
+        <div className="md:col-span-2 p-6 sm:p-8 rounded-2xl bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 backdrop-blur-md shadow-sm transition-colors duration-200">
           <form onSubmit={handleSubmit} className="space-y-4 text-xs">
             <div>
-              <label className="block text-slate-300 font-medium mb-1">{t.contact.nameLabel}</label>
+              <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">{t.contact.nameLabel}</label>
               <input
                 type="text"
                 required
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 outline-none focus:border-cyan-500 text-sm"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 outline-none focus:border-cyan-500 text-sm transition-colors"
               />
             </div>
 
             <div>
-              <label className="block text-slate-300 font-medium mb-1">{t.contact.emailLabel}</label>
+              <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">{t.contact.emailLabel}</label>
               <input
                 type="email"
                 required
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 outline-none focus:border-cyan-500 text-sm"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 outline-none focus:border-cyan-500 text-sm transition-colors"
               />
             </div>
 
             <div>
-              <label className="block text-slate-300 font-medium mb-1">{t.contact.subjectLabel}</label>
+              <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">{t.contact.subjectLabel}</label>
               <input
                 type="text"
                 required
                 value={formData.subject}
                 onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 outline-none focus:border-cyan-500 text-sm"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-4 py-3 text-slate-900 dark:text-slate-100 outline-none focus:border-cyan-500 text-sm transition-colors"
               />
             </div>
 
             <div>
-              <label className="block text-slate-300 font-medium mb-1">{t.contact.messageLabel}</label>
+              <label className="block text-slate-700 dark:text-slate-300 font-medium mb-1">{t.contact.messageLabel}</label>
               <textarea
                 required
                 rows={5}
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                className="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-slate-100 outline-none focus:border-cyan-500 text-sm resize-none"
+                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl p-4 text-slate-900 dark:text-slate-100 outline-none focus:border-cyan-500 text-sm resize-none transition-colors"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-sm shadow-lg shadow-cyan-500/20 transition-all"
+              className="w-full flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-sm shadow-lg shadow-cyan-500/20 transition-all cursor-pointer"
             >
               <Send className="w-4 h-4" />
               <span>{t.contact.sendBtn}</span>
@@ -93,16 +93,16 @@ export const ContactPage: React.FC = () => {
 
         {/* Sidebar info */}
         <div className="space-y-6">
-          <div className="p-6 rounded-2xl bg-slate-900/40 border border-slate-800 space-y-4">
-            <div className="flex items-center gap-2 font-bold text-slate-200 text-sm">
-              <Mail className="w-4 h-4 text-cyan-400" />
+          <div className="p-6 rounded-2xl bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 space-y-4 shadow-sm transition-colors duration-200">
+            <div className="flex items-center gap-2 font-bold text-slate-900 dark:text-slate-200 text-sm">
+              <Mail className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
               <span>{t.contact.contactInfoTitle}</span>
             </div>
-            <p className="text-xs text-slate-400 font-mono bg-slate-950 p-3 rounded-xl border border-slate-800">
+            <p className="text-xs text-slate-700 dark:text-slate-400 font-mono bg-slate-100 dark:bg-slate-950 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
               {t.contact.emailDirect}
             </p>
-            <div className="flex items-start gap-2 text-xs text-slate-400 pt-2 border-t border-slate-800/60">
-              <Clock className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
+            <div className="flex items-start gap-2 text-xs text-slate-500 dark:text-slate-400 pt-2 border-t border-slate-200 dark:border-slate-800/60">
+              <Clock className="w-4 h-4 text-purple-500 dark:text-purple-400 shrink-0 mt-0.5" />
               <span>{t.contact.responseNotice}</span>
             </div>
           </div>
@@ -113,3 +113,4 @@ export const ContactPage: React.FC = () => {
     </div>
   );
 };
+
