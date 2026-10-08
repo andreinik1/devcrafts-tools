@@ -6,11 +6,12 @@ export const en = {
     copy: "Copy",
     copied: "Copied to clipboard!",
     download: "Download",
+    downloaded: "File downloaded!",
     clear: "Clear",
     reset: "Reset",
     formatting: "Format",
     minifying: "Minify",
-    searchPlaceholder: "Search tools (e.g., SVG, JSON, REM, Glassmorphism)...",
+    searchPlaceholder: "Search tools (e.g., Image, Open Graph, SVG, JSON, REM)...",
     allTools: "All Micro-Tools",
     exploreTools: "Explore Tools",
     tryNow: "Try Tool",
@@ -27,6 +28,8 @@ export const en = {
     jsonToTs: "JSON to TS / Zod",
     pxToRem: "PX to REM",
     cssShadow: "CSS Shadow & Glass",
+    imageConverter: "Image Converter",
+    openGraphGenerator: "Open Graph Generator",
     about: "About",
     contact: "Contact",
     privacy: "Privacy Policy",
@@ -42,7 +45,7 @@ export const en = {
     badge: "⚡ Browser-Powered & Zero Server Latency",
     titlePrefix: "Essential Micro-Tools for Modern",
     titleHighlight: "Developers & Designers",
-    description: "Boost your workflow with hyper-fast, 100% client-side utilities. Clean SVGs, generate TypeScript & Zod schemas, calculate fluid REM typography, and design glassmorphism shadows instantly.",
+    description: "Boost your workflow with hyper-fast, 100% client-side utilities. Convert & compress images, generate Open Graph meta tags, clean SVGs, create TypeScript schemas, and design glassmorphism shadows instantly.",
     privacyGuarantee: "Privacy Guaranteed: All computations execute locally inside your Web Browser engine.",
   },
   toolsList: {
@@ -65,7 +68,17 @@ export const en = {
       title: "CSS Shadow & Glassmorphism Generator",
       desc: "Design multi-layer box shadows and frosted glass backdrop-blur effects with live preview and Tailwind CSS export.",
       badge: "UI / UX",
-    }
+    },
+    imageConverter: {
+      title: "Image Converter & Compressor",
+      desc: "Convert and compress PNG, JPG, WEBP, GIF, and SVG images to WebP, PNG, or JPEG 100% in your browser.",
+      badge: "Media / Compression",
+    },
+    openGraphGenerator: {
+      title: "Meta Tags & Open Graph Generator",
+      desc: "Generate social card meta tags for Facebook, Twitter/X, and Google Search with real-time live preview.",
+      badge: "SEO / Marketing",
+    },
   },
   svgCleanerTool: {
     title: "SVG Cleaner & DataURI Converter",
@@ -98,105 +111,105 @@ export const en = {
     faq: [
       {
         question: "Does this tool send my SVG graphics to a server?",
-        answer: "No. SVG Cleaner uses the native DOMParser API in your browser engine. Your graphics are processed 100% locally on your computer."
+        answer: "No. SVG Cleaner parses XML data locally in your browser using native DOMParser APIs."
       },
       {
-        question: "Why should I remove width and height attributes from SVG?",
-        answer: "Removing explicit width and height attributes while keeping the viewBox enables fluid CSS scaling, making your icons naturally responsive."
+        question: "Why should I remove width and height attributes?",
+        answer: "Removing fixed width/height while keeping viewBox enables SVGs to scale fluidly via CSS."
       },
       {
-        question: "What is the advantage of converting SVG to a DataURI?",
-        answer: "DataURIs can be embedded directly into CSS background-image rules or inline HTML image tags, eliminating extra HTTP requests to external servers."
+        question: "What is the advantage of SVG Data URIs?",
+        answer: "Data URIs embed vector graphics directly into CSS or img src attributes, eliminating extra HTTP requests."
       },
       {
-        question: "Is the exported React TSX component ready for production?",
-        answer: "Yes! Attributes like stroke-width and fill-rule are automatically mapped to camelCase React properties (strokeWidth, fillRule)."
+        question: "Are generated React TSX components production ready?",
+        answer: "Yes! All SVG attributes like stroke-width are converted to React camelCase (strokeWidth)."
       }
     ]
   },
   jsonToTsTool: {
     title: "JSON to TypeScript & Zod Generator",
-    subtitle: "Instantly parse JSON payloads into strictly-typed TypeScript interfaces and runtime Zod validation schemas.",
-    inputLabel: "Input JSON Data:",
-    outputTsLabel: "Generated TypeScript Definitions:",
+    subtitle: "Instantly convert JSON responses into strict TypeScript interfaces and Zod validation schemas.",
+    inputLabel: "Input Raw JSON:",
+    outputTsLabel: "Generated TypeScript Interfaces:",
     outputZodLabel: "Generated Zod Validation Schema:",
     rootTypeName: "Root Type Name:",
     useInterface: "Use 'interface' instead of 'type'",
     exportTypes: "Add 'export' keyword",
-    makeOptional: "Detect optional fields",
-    invalidJson: "Invalid JSON format. Please verify syntax.",
-    validJson: "Valid JSON syntax verified.",
+    makeOptional: "Auto-detect optional properties",
+    invalidJson: "Invalid JSON syntax. Please check input.",
+    validJson: "JSON syntax validated successfully.",
     downloadFileName: "types.ts",
-    seoTitle: "Eliminate Manual Type Writing with Automated Schema Generation",
-    seoContent1: "In modern JavaScript and TypeScript development, communicating with REST APIs, GraphQL endpoints, or third-party webhooks requires strict type safety. Manually writing TypeScript interfaces for complex nested JSON responses is tedious and error-prone, frequently resulting in subtle runtime bugs when field names or data types change.",
-    seoContent2: "Our JSON to TypeScript and Zod Schema Generator recursively inspects sample JSON payloads, inferring primitive types (string, number, boolean, null), complex arrays, union types, and deeply nested child objects. It creates organized, clean TypeScript type definitions alongside Zod validation schemas.",
-    seoContent3: "By leveraging Zod runtime validation alongside TypeScript compile-time safety, you can validate incoming server responses at runtime without writing tedious boilerplate validator functions. All JSON parsing happens 100% client-side, ensuring proprietary enterprise payload schemas remain completely private.",
+    seoTitle: "Automated Type and Schema Generation for TypeScript",
+    seoContent1: "In modern JavaScript and TypeScript application development, consuming REST APIs, GraphQL endpoints, or webhooks requires strong static typing. Manually writing TypeScript interfaces for complex nested JSON responses is slow, tedious, and error-prone.",
+    seoContent2: "Our JSON to TypeScript and Zod converter recursively parses JSON data structures, inferring primitive types (string, number, boolean, null), arrays, unions, and deeply nested objects. It generates clean TypeScript types and Zod schemas instantly.",
+    seoContent3: "Combining TypeScript static typing with Zod runtime validation ensures end-to-end type safety in your applications. All parsing happens 100% on the client side for complete privacy.",
     features: [
-      "Supports nested JSON objects, arrays, and primitive types.",
+      "Supports nested JSON objects, arrays, and primitive data types.",
       "Generates runtime validation schemas for the Zod library.",
-      "Customizable type root naming and interface vs type declaration formats.",
-      "100% private: ideal for confidential enterprise API responses."
+      "Flexible configuration for interface/type formatting and root naming.",
+      "100% private: ideal for confidential API payloads."
     ],
     faq: [
       {
-        question: "What is Zod and why is it generated alongside TypeScript types?",
-        answer: "TypeScript types exist only at compile-time. Zod provides runtime schema validation to ensure server responses match expected types when your app executes."
+        question: "What is Zod and why generate it alongside TypeScript types?",
+        answer: "TypeScript types exist only at compile time. Zod provides runtime validation to ensure actual payload compliance."
       },
       {
-        question: "Can I generate interface instead of type aliases?",
-        answer: "Yes! Toggle the 'Use interface instead of type' option in the generator settings panel."
+        question: "Can I generate interfaces instead of type aliases?",
+        answer: "Yes! Check the 'Use interface instead of type' option in generator settings."
       },
       {
-        question: "How does array type inference work?",
-        answer: "The parser inspects array elements, automatically inferring primitive or complex child object type definitions."
+        question: "How does array type detection work?",
+        answer: "The parser inspects array elements to infer primitive or merged object interface structures."
       },
       {
-        question: "Is there any payload size limitation?",
-        answer: "Because calculations run directly inside your browser JS engine, it can easily handle large JSON structures in milliseconds."
+        question: "Is there any limit on JSON payload size?",
+        answer: "Because processing happens locally in your browser, large JSON structures parse in milliseconds."
       }
     ]
   },
   pxToRemTool: {
     title: "PX to REM & Fluid Typography Calculator",
-    subtitle: "Convert static pixel measurements to scalable REM/EM units and generate responsive CSS clamp() formulas.",
-    baseFontSize: "Root Base Font Size (px):",
+    subtitle: "Convert pixels to REM/EM units and generate CSS clamp() formulas for responsive typography.",
+    baseFontSize: "Base Font Size (px):",
     pxInput: "Pixel Value (px):",
     remOutput: "REM Value:",
     emOutput: "EM Value:",
-    fluidTitle: "Fluid Typography & Dynamic Spacing Calculator",
+    fluidTitle: "Fluid Typography Calculator",
     minPx: "Min Font Size (px):",
     maxPx: "Max Font Size (px):",
-    minViewport: "Min Viewport Width (px):",
-    maxViewport: "Max Viewport Width (px):",
+    minViewport: "Min Screen Width (px):",
+    maxViewport: "Max Screen Width (px):",
     clampFormula: "Generated CSS clamp() Formula:",
-    tailwindClass: "Tailwind CSS Value:",
-    lookupTableTitle: "Quick PX to REM Reference Table",
-    seoTitle: "Mastering Fluid Layouts with REM Units and CSS clamp()",
-    seoContent1: "Fixed pixel (`px`) values hinder web accessibility and responsive scaling. When users customize default browser text zoom settings for readability, websites built exclusively with fixed pixels fail to scale gracefully, creating broken layouts and poor user experiences.",
-    seoContent2: "Relative units like `rem` (root em) adjust dynamically based on the HTML root font size (typically 16px by default). Converting layout padding, margins, font sizes, and container widths to REM ensures seamless scaling across diverse device viewports and screen densities.",
-    seoContent3: "Furthermore, modern CSS `clamp(MIN, VAL, MAX)` allows developers to define dynamic typography that smoothly scales between minimum and maximum bounds depending on viewport width. Use our interactive calculator to derive mathematically precise fluid typography formulas and Tailwind CSS utility classes instantly.",
+    tailwindClass: "Tailwind CSS Arbitrary Class:",
+    lookupTableTitle: "Quick PX ↔ REM Conversion Reference",
+    seoTitle: "Responsive Typography with REM and CSS clamp()",
+    seoContent1: "Fixed pixel (`px`) values limit website responsiveness and accessibility. Users with customized browser font sizes experience broken or unscalable layouts when styling relies solely on pixels.",
+    seoContent2: "Relative `rem` (root em) units scale relative to the root HTML font size (typically 16px). Converting margins, padding, and font sizes to REM ensures proportional rendering across all devices.",
+    seoContent3: "Utilizing modern CSS `clamp(MIN, VAL, MAX)` functions enables fluid typography that scales smoothly with viewport width. Our calculator computes exact math formulas and Tailwind CSS utility classes.",
     features: [
-      "Calculates precise REM/EM values based on custom base font size.",
-      "Generates dynamic CSS clamp(min, preferred, max) formulas for typography.",
-      "Produces copyable Tailwind CSS custom utility classes.",
-      "Includes quick lookup reference tables for common pixel values."
+      "Calculates exact REM/EM values based on custom base font sizes.",
+      "Generates dynamic CSS clamp(min, preferred, max) formulas.",
+      "Outputs ready-to-use Tailwind CSS arbitrary utility classes.",
+      "Includes a quick-reference conversion lookup table."
     ],
     faq: [
       {
-        question: "What is the default root base font size in browsers?",
-        answer: "Most modern web browsers set a default root font size of 16px (1rem = 16px). You can customize this base in our tool."
+        question: "What is the default browser base font size?",
+        answer: "Most web browsers default to 16px (1rem = 16px). You can adjust this in our calculator."
       },
       {
-        question: "Why choose REM over PX for web typography?",
-        answer: "REM units adapt to user browser accessibility settings (e.g. enlarged text zoom), ensuring your site remains readable."
+        question: "Why choose REM over PX?",
+        answer: "REM units respect user browser accessibility preferences and zoom settings."
       },
       {
         question: "How does CSS clamp() work?",
-        answer: "CSS clamp(MIN, VAL, MAX) clamps a value between defined lower and upper bounds, dynamically computing fluid font sizes on viewport change."
+        answer: "CSS clamp(MIN, VAL, MAX) constrains a fluid value between defined lower and upper bounds."
       },
       {
-        question: "Are these values compatible with Tailwind CSS?",
-        answer: "Yes, we generate direct Tailwind CSS arbitrary values like text-[clamp(1rem,2vw,2.5rem)] ready to paste into your components."
+        question: "Are clamp formulas compatible with Tailwind CSS?",
+        answer: "Yes, we generate Tailwind arbitrary classes like text-[clamp(1rem,2vw,2.5rem)] for quick copying."
       }
     ]
   },
@@ -245,6 +258,90 @@ export const en = {
       {
         question: "How do inset box shadows differ from regular drop shadows?",
         answer: "Inset shadows draw the shadow inside the boundary of the HTML element rather than casting it outside, creating an etched effect."
+      }
+    ]
+  },
+  imageConverterTool: {
+    title: "Image to WebP/PNG/JPG Converter & Compressor",
+    subtitle: "Convert formats, optimize file size, and inspect compression savings 100% locally in your browser.",
+    dragDropTitle: "Drag & Drop Image Here",
+    dragDropSubtitle: "or click to browse files (PNG, JPG, WEBP, GIF, SVG)",
+    targetFormatLabel: "Select Output Format:",
+    qualityLabel: "Compression Quality:",
+    savingsLabel: "File Size Reduction:",
+    reducedBy: "Size reduced by {percent}",
+    originalTitle: "Original Image",
+    convertedTitle: "Converted Result",
+    downloadBtn: "Download Converted Image",
+    seoTitle: "Why Converting and Compressing Web Images Matters for SEO & Performance",
+    seoContent1: "Images account for over 60% of total web page payload. Serving unoptimized JPEG or PNG graphics degrades Core Web Vitals (LCP), delays initial rendering, and wastes mobile data bandwidth for site visitors.",
+    seoContent2: "Modern image formats like WebP offer superior lossy and lossless compression compared to legacy formats, reducing file size by 30% to 80% with virtually imperceptible visual quality loss. Processing images directly inside your browser ensures uncompressed source files remain 100% private.",
+    seoContent3: "Our client-side Image Converter utilizes the HTML5 Canvas API and native toBlob rendering pipelines. Adjust quality parameters in real-time, inspect visual fidelity side-by-side, and download production-ready WebP, PNG, or JPEG files instantly.",
+    features: [
+      "100% client-side execution — image files never upload to remote servers.",
+      "Supports input formats: PNG, JPG, WEBP, GIF, and SVG.",
+      "Export to WebP, PNG, and JPEG with custom 1%–100% compression quality sliders.",
+      "Real-time file size comparison and savings counter."
+    ],
+    faq: [
+      {
+        question: "Are my uploaded image files stored or sent to a server?",
+        answer: "No. All conversion and compression operations run locally inside your browser using HTML5 Canvas APIs."
+      },
+      {
+        question: "Why should I convert images to WebP format?",
+        answer: "WebP provides significantly smaller file sizes than PNG and JPEG while preserving visual clarity, helping your site load faster."
+      },
+      {
+        question: "How does transparent PNG conversion to JPEG work?",
+        answer: "When converting transparent PNGs to JPEG, a white background fill is automatically applied to prevent black artifacts."
+      },
+      {
+        question: "What is the recommended compression quality setting?",
+        answer: "A quality slider setting of 75%–85% provides optimal file size savings with imperceptible visual loss."
+      }
+    ]
+  },
+  openGraphGeneratorTool: {
+    title: "Meta Tags & Open Graph Generator",
+    subtitle: "Generate social media meta tags and preview live Google, Twitter/X, and Facebook card cards.",
+    formTitle: "Meta Tag Parameters",
+    metaTitleLabel: "Page Title (<title> & og:title):",
+    metaDescLabel: "Meta Description:",
+    canonicalUrlLabel: "Canonical / Target URL:",
+    ogImageUrlLabel: "Open Graph Image URL:",
+    siteNameLabel: "Site Name (og:site_name):",
+    typeLabel: "Resource Type (og:type):",
+    twitterHandleLabel: "Twitter / X Handle (@user):",
+    previewTitle: "Live Card Preview",
+    codeTitle: "Generated HTML Meta Tags",
+    copyAllBtn: "Copy All Meta Tags",
+    seoTitle: "The Importance of Open Graph and Social Meta Tags for Web Traffic",
+    seoContent1: "When links to your website or blog articles are shared across social platforms like Facebook, Twitter/X, LinkedIn, Slack, or Discord, crawler bots scan HTML <head> tags to render visual preview cards.",
+    seoContent2: "High-quality social preview cards with engaging titles, descriptions, and crisp 1200x630 banner images significantly increase click-through rates (CTR) from social feeds. Properly configured canonical links and meta descriptions also improve Google Search ranking.",
+    seoContent3: "Our Open Graph Generator simplifies meta tag creation by providing interactive real-time visual card previews for Google Search, Twitter/X, and Open Graph platforms. Copy standard HTML markup with one click.",
+    features: [
+      "Generates Primary HTML, Open Graph, and Twitter Card meta tags.",
+      "Real-time live card previews for Facebook/Slack, Twitter/X, and Google Search.",
+      "Supports title, description, image URL, canonical URL, site name, and twitter handle.",
+      "One-click copy and download for production HTML <head> markup."
+    ],
+    faq: [
+      {
+        question: "What is Open Graph (OG)?",
+        answer: "Open Graph is a protocol created by Facebook that enables any web page to become a rich object in social media feeds."
+      },
+      {
+        question: "What is the recommended Open Graph image size?",
+        answer: "The ideal Open Graph banner image resolution is 1200 × 630 pixels with an aspect ratio of 1.91:1."
+      },
+      {
+        question: "How do Twitter / X Cards differ from Open Graph?",
+        answer: "Twitter Cards use twitter:card meta tags to specify card formats like summary_large_image alongside standard OG tags."
+      },
+      {
+        question: "Where should I paste these generated meta tags?",
+        answer: "Paste the generated HTML snippet inside the <head> ... </head> section of your web page or template header."
       }
     ]
   },

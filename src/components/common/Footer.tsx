@@ -55,6 +55,16 @@ export const Footer: React.FC = () => {
                   {t.nav.cssShadow}
                 </Link>
               </li>
+              <li>
+                <Link to="/tools/image-converter" className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
+                  {t.nav.imageConverter}
+                </Link>
+              </li>
+              <li>
+                <Link to="/tools/open-graph-generator" className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
+                  {t.nav.openGraphGenerator}
+                </Link>
+              </li>
             </ul>
           </div>
 

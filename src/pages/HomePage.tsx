@@ -14,6 +14,8 @@ import {
   ArrowRight,
   CheckCircle,
   XCircle,
+  Image,
+  Share2,
 } from 'lucide-react';
 
 export const HomePage: React.FC = () => {
@@ -56,6 +58,24 @@ export const HomePage: React.FC = () => {
       badge: t.toolsList.cssShadow.badge,
       icon: Layers,
       gradient: 'from-amber-500/20 to-orange-500/10 border-amber-500/30 text-amber-600 dark:text-amber-400',
+    },
+    {
+      id: 'image-converter',
+      slug: '/tools/image-converter',
+      title: t.toolsList.imageConverter.title,
+      desc: t.toolsList.imageConverter.desc,
+      badge: t.toolsList.imageConverter.badge,
+      icon: Image,
+      gradient: 'from-rose-500/20 to-pink-500/10 border-rose-500/30 text-rose-600 dark:text-rose-400',
+    },
+    {
+      id: 'open-graph-generator',
+      slug: '/tools/open-graph-generator',
+      title: t.toolsList.openGraphGenerator.title,
+      desc: t.toolsList.openGraphGenerator.desc,
+      badge: t.toolsList.openGraphGenerator.badge,
+      icon: Share2,
+      gradient: 'from-violet-500/20 to-indigo-500/10 border-violet-500/30 text-violet-600 dark:text-violet-400',
     },
   ];
 

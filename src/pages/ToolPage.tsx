@@ -5,6 +5,8 @@ import { SvgCleanerTool } from '../components/tools/SvgCleanerTool';
 import { JsonToTsTool } from '../components/tools/JsonToTsTool';
 import { PxToRemTool } from '../components/tools/PxToRemTool';
 import { CssShadowTool } from '../components/tools/CssShadowTool';
+import { ImageConverterTool } from '../components/tools/ImageConverterTool';
+import { OpenGraphGeneratorTool } from '../components/tools/OpenGraphGeneratorTool';
 import { SEOContent } from '../components/common/SEOContent';
 import { FAQAccordion } from '../components/common/FAQAccordion';
 import { AdSlot } from '../components/common/AdSlot';
@@ -27,6 +29,10 @@ export const ToolPage: React.FC = () => {
         return <PxToRemTool />;
       case 'css-shadow-generator':
         return <CssShadowTool />;
+      case 'image-converter':
+        return <ImageConverterTool />;
+      case 'open-graph-generator':
+        return <OpenGraphGeneratorTool />;
       default:
         return <Navigate to="/" replace />;
     }
@@ -80,6 +86,30 @@ export const ToolPage: React.FC = () => {
           ],
           features: t.cssShadowTool.features,
           faq: t.cssShadowTool.faq,
+        };
+
+      case 'image-converter':
+        return {
+          title: t.imageConverterTool.seoTitle,
+          paragraphs: [
+            t.imageConverterTool.seoContent1,
+            t.imageConverterTool.seoContent2,
+            t.imageConverterTool.seoContent3,
+          ],
+          features: t.imageConverterTool.features,
+          faq: t.imageConverterTool.faq,
+        };
+
+      case 'open-graph-generator':
+        return {
+          title: t.openGraphGeneratorTool.seoTitle,
+          paragraphs: [
+            t.openGraphGeneratorTool.seoContent1,
+            t.openGraphGeneratorTool.seoContent2,
+            t.openGraphGeneratorTool.seoContent3,
+          ],
+          features: t.openGraphGeneratorTool.features,
+          faq: t.openGraphGeneratorTool.faq,
         };
 
       default:

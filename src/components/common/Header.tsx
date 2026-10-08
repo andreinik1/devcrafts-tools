@@ -15,6 +15,8 @@ import {
   Terminal,
   Sun,
   Moon,
+  Image,
+  Share2,
 } from 'lucide-react';
 
 export const Header: React.FC = () => {
@@ -48,6 +50,18 @@ export const Header: React.FC = () => {
       path: '/tools/css-shadow-generator',
       icon: Layers,
       desc: t.toolsList.cssShadow.desc,
+    },
+    {
+      name: t.nav.imageConverter,
+      path: '/tools/image-converter',
+      icon: Image,
+      desc: t.toolsList.imageConverter.desc,
+    },
+    {
+      name: t.nav.openGraphGenerator,
+      path: '/tools/open-graph-generator',
+      icon: Share2,
+      desc: t.toolsList.openGraphGenerator.desc,
     },
   ];
 

@@ -27,6 +27,12 @@ export const useSEO = () => {
     } else if (path.includes('/tools/css-shadow-generator')) {
       title = `${t.cssShadowTool.title} | VibeDev Tools`;
       description = t.cssShadowTool.subtitle;
+    } else if (path.includes('/tools/image-converter')) {
+      title = `${t.imageConverterTool.title} | VibeDev Tools`;
+      description = t.imageConverterTool.subtitle;
+    } else if (path.includes('/tools/open-graph-generator')) {
+      title = `${t.openGraphGeneratorTool.title} | VibeDev Tools`;
+      description = t.openGraphGeneratorTool.subtitle;
     } else if (path.includes('/about')) {
       title = `${t.about.title} | VibeDev Tools`;
       description = t.about.subtitle;
