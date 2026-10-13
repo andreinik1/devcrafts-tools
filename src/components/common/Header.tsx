@@ -72,11 +72,11 @@ export const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 group">
-          <div className="p-2 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-600/20 border border-cyan-500/30 text-cyan-500 dark:text-cyan-400 group-hover:scale-105 transition-transform duration-200">
+          <div className="p-2 rounded-xl bg-linear-to-br from-cyan-500/20 to-blue-600/20 border border-cyan-500/30 text-cyan-500 dark:text-cyan-400 group-hover:scale-105 transition-transform duration-200">
             <Terminal className="w-5 h-5" />
           </div>
           <div className="flex flex-col">
-            <span className="font-bold text-lg text-slate-900 dark:text-slate-100 tracking-tight flex items-center gap-1.5">
+            <span className="font-bold text-lg text-slate-900 dark:text-slate-100 tracking-tight hidden md:flex items-center gap-1.5 ">
               VibeDev <span className="text-cyan-500 dark:text-cyan-400 font-extrabold">Tools</span>
             </span>
           </div>
