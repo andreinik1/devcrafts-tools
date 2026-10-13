@@ -365,7 +365,7 @@ export const en = {
     sendBtn: "Send Message",
     successToast: "Thank you! Your message has been received.",
     contactInfoTitle: "Direct Communication",
-    emailDirect: "support@vibedev.tools",
+    emailDirect: "shadowridoru@gmail.com",
     responseNotice: "We typically respond to developer queries within 24–48 hours.",
   },
   privacy: {
@@ -381,5 +381,19 @@ export const en = {
     section4Text: "Our website may contain links to external developer resources, documentation, or code repositories. We are not responsible for the privacy practices or content of third-party websites.",
     section5Title: "5. Contact Information",
     section5Text: "If you have questions regarding this Privacy Policy, feel free to contact us at privacy@vibedev.tools.",
+  },
+  features: {
+    privacy: {
+      title: "100% Browser Privacy",
+      desc: "Zero servers, zero database logs. Your JSON payloads, SVG graphics, and design variables never leave your browser context."
+    },
+    latency: {
+      title: "Zero Latency Processing",
+      desc: "Powered by modern HTML5 DOM APIs and Vite TypeScript compilation for instantaneous real-time UI updates."
+    },
+    adsense: {
+      title: "Google AdSense Certified",
+      desc: "Strictly engineered for monetization compliance with non-intrusive placeholders and full SEO documentation."
+    }
   }
 };

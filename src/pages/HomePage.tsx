@@ -89,7 +89,7 @@ export const HomePage: React.FC = () => {
   return (
     <div className="space-y-12">
       {/* Hero Section */}
-      <section className="relative overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-800 bg-gradient-to-b from-white via-slate-50 to-slate-100 dark:from-slate-900/80 dark:via-slate-950 dark:to-slate-950 p-6 sm:p-14 text-center backdrop-blur-xl shadow-sm transition-colors duration-200">
+      <section className="relative overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-800 bg-linear-to-b from-white via-slate-50 to-slate-100 dark:from-slate-900/80 dark:via-slate-950 dark:to-slate-950 p-6 sm:p-14 text-center backdrop-blur-xl shadow-sm transition-colors duration-200">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 max-w-3xl mx-auto space-y-6">
@@ -100,7 +100,7 @@ export const HomePage: React.FC = () => {
 
           <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight leading-tight">
             {t.hero.titlePrefix}{' '}
-            <span className="bg-gradient-to-r from-cyan-600 via-blue-600 to-purple-600 dark:from-cyan-400 dark:via-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-cyan-600 via-blue-600 to-purple-600 dark:from-cyan-400 dark:via-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
               {t.hero.titleHighlight}
             </span>
           </h1>
@@ -165,7 +165,7 @@ export const HomePage: React.FC = () => {
                 >
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                      <div className={`p-3 rounded-xl bg-gradient-to-br border ${tool.gradient}`}>
+                      <div className={`p-3 rounded-xl bg-linear-to-br border ${tool.gradient}`}>
                         <Icon className="w-6 h-6" />
                       </div>
                       <span className="text-[11px] font-mono px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 font-semibold">
@@ -226,9 +226,9 @@ export const HomePage: React.FC = () => {
           <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center font-bold">
             01
           </div>
-          <h3 className="text-base font-bold text-slate-900 dark:text-slate-200">100% Browser Privacy</h3>
+          <h3 className="text-base font-bold text-slate-900 dark:text-slate-200">{t.features.privacy.title}</h3>
           <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-            Zero servers, zero database logs. Your JSON payloads, SVG graphics, and design variables never leave your browser context.
+            {t.features.privacy.desc}
           </p>
         </div>
 
@@ -236,9 +236,9 @@ export const HomePage: React.FC = () => {
           <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold">
             02
           </div>
-          <h3 className="text-base font-bold text-slate-900 dark:text-slate-200">Zero Latency Processing</h3>
+          <h3 className="text-base font-bold text-slate-900 dark:text-slate-200">{t.features.latency.title}</h3>
           <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-            Powered by modern HTML5 DOM APIs and Vite TypeScript compilation for instantaneous real-time UI updates.
+            {t.features.latency.desc}
           </p>
         </div>
 
@@ -246,9 +246,9 @@ export const HomePage: React.FC = () => {
           <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold">
             03
           </div>
-          <h3 className="text-base font-bold text-slate-900 dark:text-slate-200">Google AdSense Certified</h3>
+          <h3 className="text-base font-bold text-slate-900 dark:text-slate-200">{t.features.adsense.title}</h3>
           <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-            Strictly engineered for monetization compliance with non-intrusive placeholders and full SEO documentation.
+            {t.features.adsense.desc}
           </p>
         </div>
       </section>
