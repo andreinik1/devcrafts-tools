@@ -36,9 +36,96 @@ const attributeMap: Record<string, string> = {
   'text-anchor': 'textAnchor',
   'dominant-baseline': 'dominantBaseline',
   'class': 'className',
+  'xlink:href': 'xlinkHref',
   'xmlns:xlink': 'xmlnsXlink',
-  'xml:space': 'xmlSpace'
+  'xml:space': 'xmlSpace',
 };
+
+const JUNK_ATTR_PREFIXES = ['inkscape:', 'sodipodi:', 'sketch:', 'xmlns:inkscape', 'xmlns:sodipodi', 'xmlns:sketch'];
+
+/**
+ * Многие экспортёры (Sketch, Figma, Gemini и т.д.) оставляют префиксы вроде `sketch:type`
+ * без объявления xmlns:sketch. Для XML-парсера это фатальная ошибка: DOMParser возвращает
+ * <parsererror> вместо <svg>. Объявляем недостающие префиксы на корневом теге.
+ */
+function declareMissingNamespaces(svg: string): string {
+  if (!/<svg\b/i.test(svg)) return svg;
+
+  const declared = new Set<string>(['xml', 'xmlns']);
+  for (const m of svg.matchAll(/\sxmlns:([\w.-]+)\s*=/g)) declared.add(m[1]);
+
+  const used = new Set<string>();
+  for (const m of svg.matchAll(/<[^!?<>][^<>]*>/g)) {
+    // значения в кавычках выкидываем, чтобы не ловить "a:b=" внутри них
+    const tag = m[0].replace(/"[^"]*"|'[^']*'/g, '""');
+    const el = tag.match(/^<\/?([\w.-]+):[\w.-]+/);
+    if (el) used.add(el[1]);
+    for (const a of tag.matchAll(/\s([\w.-]+):[\w.-]+\s*=/g)) used.add(a[1]);
+  }
+
+  const missing = [...used].filter((p) => !declared.has(p));
+  if (missing.length === 0) return svg;
+
+  const decls = missing.map((p) => ` xmlns:${p}="urn:unknown:${p}"`).join('');
+  return svg.replace(/<svg\b/i, `<svg${decls}`);
+}
+
+/** Удаляет width/height только у корневого <svg> и при необходимости строит viewBox из них. */
+function removeRootDimensionsRegex(svg: string): string {
+  return svg.replace(/<svg\b[^>]*>/i, (tag) => {
+    const w = tag.match(/\swidth\s*=\s*["']([\d.]+)(?:px)?["']/i)?.[1];
+    const h = tag.match(/\sheight\s*=\s*["']([\d.]+)(?:px)?["']/i)?.[1];
+
+    let result = tag.replace(/\s(?:width|height)\s*=\s*("[^"]*"|'[^']*')/gi, '');
+
+    if (!/\sviewBox\s*=/i.test(result) && w && h) {
+      result = result.replace(/<svg\b/i, `<svg viewBox="0 0 ${w} ${h}"`);
+    }
+    return result;
+  });
+}
+
+/** Запасной путь на регулярках, если XML-парсер всё равно не справился. */
+function cleanWithRegex(code: string, options: SvgCleanerOptions): string {
+  let out = code;
+
+  if (options.removeMetadata) {
+    out = out
+      .replace(/<(metadata|title|desc|script)\b[^>]*>[\s\S]*?<\/\1>/gi, '')
+      .replace(/<(metadata|title|desc|script)\b[^>]*\/>/gi, '')
+      .replace(/\s(?:inkscape|sodipodi|sketch):[\w.-]+\s*=\s*("[^"]*"|'[^']*')/g, '')
+      .replace(/\sxmlns:(?:inkscape|sodipodi|sketch)\s*=\s*("[^"]*"|'[^']*')/g, '')
+      .replace(/\sdata-name\s*=\s*("[^"]*"|'[^']*')/g, '');
+  }
+
+  if (options.removeDimensions) {
+    out = removeRootDimensionsRegex(out);
+  }
+
+  return out;
+}
+
+function prettify(code: string): string {
+  const lines = code.replace(/(>)(<)(\/*)/g, '$1\n$2$3').split('\n');
+  let indent = 0;
+  let formatted = '';
+
+  lines.forEach((raw) => {
+    const line = raw.trim();
+    if (!line) return;
+
+    const isClosing = /^<\//.test(line);
+    // открывающий тег без закрытия на той же строке и не самозакрытый
+    const isOpening =
+      /^<[^/!?]/.test(line) && !/\/>$/.test(line) && !/<\/[^>]+>$/.test(line);
+
+    if (isClosing) indent = Math.max(0, indent - 1);
+    formatted += '  '.repeat(indent) + line + '\n';
+    if (isOpening) indent++;
+  });
+
+  return formatted.trim();
+}
 
 export function cleanSvg(svgContent: string, options: SvgCleanerOptions): SvgCleanerResult {
   const originalSize = new Blob([svgContent]).size;
@@ -55,35 +142,28 @@ export function cleanSvg(svgContent: string, options: SvgCleanerOptions): SvgCle
 
   let code = svgContent;
 
-  // 1. Remove comments if option selected
+  // 1. Комментарии
   if (options.removeComments) {
     code = code.replace(/<!--[\s\S]*?-->/g, '');
   }
 
-  // Use DOMParser to safely inspect and manipulate SVG node structure
+  // 2. Чиним необъявленные xmlns-префиксы, иначе DOMParser падает
+  code = declareMissingNamespaces(code);
+
+  // 3. Структурная очистка через DOM, с проверкой на ошибку парсинга
+  let handledByDom = false;
   try {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(code, 'image/svg+xml');
-    const svgEl = doc.querySelector('svg');
+    const doc = new DOMParser().parseFromString(code, 'image/svg+xml');
+    const root = doc.documentElement;
+    const hasParseError = doc.getElementsByTagName('parsererror').length > 0;
 
-    if (svgEl) {
+    if (!hasParseError && root && root.localName === 'svg') {
       if (options.removeMetadata) {
-        const metadataNodes = doc.querySelectorAll('metadata, title, desc, script');
-        metadataNodes.forEach((node) => node.remove());
+        doc.querySelectorAll('metadata, title, desc, script').forEach((n) => n.remove());
 
-        // Remove inkscape, sodipodi, sketch attributes
-        const allElements = doc.querySelectorAll('*');
-        allElements.forEach((el) => {
+        doc.querySelectorAll('*').forEach((el) => {
           Array.from(el.attributes).forEach((attr) => {
-            if (
-              attr.name.startsWith('inkscape:') ||
-              attr.name.startsWith('sodipodi:') ||
-              attr.name.startsWith('sketch:') ||
-              attr.name.startsWith('xmlns:sketch') ||
-              attr.name.startsWith('xmlns:inkscape') ||
-              attr.name.startsWith('xmlns:sodipodi') ||
-              attr.name === 'data-name'
-            ) {
+            if (attr.name === 'data-name' || JUNK_ATTR_PREFIXES.some((p) => attr.name.startsWith(p))) {
               el.removeAttribute(attr.name);
             }
           });
@@ -91,63 +171,52 @@ export function cleanSvg(svgContent: string, options: SvgCleanerOptions): SvgCle
       }
 
       if (options.removeDimensions) {
-        svgEl.removeAttribute('width');
-        svgEl.removeAttribute('height');
-        // Ensure viewBox exists if width and height were removed
-        if (!svgEl.getAttribute('viewBox')) {
-          svgEl.setAttribute('viewBox', '0 0 24 24');
+        const parse = (v: string | null) => {
+          const m = v?.trim().match(/^([\d.]+)(?:px)?$/i);
+          return m ? m[1] : null;
+        };
+        const w = parse(root.getAttribute('width'));
+        const h = parse(root.getAttribute('height'));
+
+        root.removeAttribute('width');
+        root.removeAttribute('height');
+
+        // viewBox нужен, иначе SVG потеряет пропорции; берём реальные размеры, а не 24x24
+        if (!root.getAttribute('viewBox') && w && h) {
+          root.setAttribute('viewBox', `0 0 ${w} ${h}`);
         }
       }
 
-      const serializer = new XMLSerializer();
-      code = serializer.serializeToString(svgEl);
+      code = new XMLSerializer().serializeToString(root);
+      handledByDom = true;
     }
   } catch {
-    // Fallback regex cleaning if DOMParser fails
+    // уйдём в regex-фолбэк ниже
   }
 
-  // Prettify vs Minify formatting
+  // 4. Фолбэк: файл всё равно не распарсился как XML, но очистить его всё равно можно
+  if (!handledByDom) {
+    code = cleanWithRegex(code, options);
+  }
+
+  // 5. Форматирование
   if (options.minifyCode) {
-    code = code
-      .replace(/>\s+</g, '><')
-      .replace(/\s+/g, ' ')
-      .trim();
+    code = code.replace(/>\s+</g, '><').replace(/\s+/g, ' ').trim();
   } else if (options.prettifyCode) {
-    let formatted = '';
-    let indent = 0;
-    const reg = /(>)(<)(\/*)/g;
-    const xml = code.replace(reg, '$1\r\n$2$3');
-    const lines = xml.split('\r\n');
-    lines.forEach((line) => {
-      let padding = '';
-      if (line.match(/<\/\w/)) {
-        indent = Math.max(0, indent - 1);
-      }
-      for (let i = 0; i < indent; i++) {
-        padding += '  ';
-      }
-      if (line.match(/<\w[^>]*[^\/]>$/)) {
-        formatted += padding + line + '\n';
-        indent++;
-      } else {
-        formatted += padding + line + '\n';
-      }
-    });
-    code = formatted.trim();
+    code = prettify(code);
   }
 
-  // Generate Data URI
-  const encodedSvg = encodeURIComponent(code)
-    .replace(/'/g, '%27')
-    .replace(/"/g, '%22');
+  // 6. Data URI
+  const encodedSvg = encodeURIComponent(code).replace(/'/g, '%27').replace(/"/g, '%22');
   const dataUri = `data:image/svg+xml;utf8,${encodedSvg}`;
 
-  // Generate React JSX Component
+  // 7. React-компонент
   let reactSvg = code;
-  Object.entries(attributeMap).forEach(([kebab, camel]) => {
-    const regex = new RegExp(`\\s${kebab}=`, 'g');
-    reactSvg = reactSvg.replace(regex, ` ${camel}=`);
-  });
+  if (options.camelCaseAttrs) {
+    Object.entries(attributeMap).forEach(([kebab, camel]) => {
+      reactSvg = reactSvg.replace(new RegExp(`\\s${kebab}=`, 'g'), ` ${camel}=`);
+    });
+  }
 
   const reactComponent = `import React from 'react';
 
@@ -158,7 +227,10 @@ export const SvgIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 export default SvgIcon;`;
 
   const cleanedSize = new Blob([code]).size;
-  const savings = originalSize > 0 ? Math.max(0, Math.round(((originalSize - cleanedSize) / originalSize) * 100)) : 0;
+  const savings =
+    originalSize > 0
+      ? Math.max(0, Math.round(((originalSize - cleanedSize) / originalSize) * 100))
+      : 0;
 
   return {
     cleanedSvg: code,

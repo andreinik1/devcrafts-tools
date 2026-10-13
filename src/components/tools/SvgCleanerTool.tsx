@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { cleanSvg, type SvgCleanerOptions } from '../../utils/svgCleaner';
 import {
@@ -37,11 +37,7 @@ export const SvgCleanerTool: React.FC = () => {
     camelCaseAttrs: true,
   });
 
-  const [result, setResult] = useState(() => cleanSvg(defaultSvg, options));
-
-  useEffect(() => {
-    setResult(cleanSvg(inputSvg, options));
-  }, [inputSvg, options]);
+  const result = useMemo(() => cleanSvg(inputSvg, options), [inputSvg, options]);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -257,11 +253,10 @@ export const SvgCleanerTool: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setActiveTab('clean')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-                  activeTab === 'clean'
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${activeTab === 'clean'
                     ? 'bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 border border-cyan-500/40 shadow-sm'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-                }`}
+                  }`}
               >
                 <Code2 className="w-4 h-4" />
                 <span>Clean SVG</span>
@@ -270,11 +265,10 @@ export const SvgCleanerTool: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setActiveTab('dataUri')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-                  activeTab === 'dataUri'
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${activeTab === 'dataUri'
                     ? 'bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 border border-cyan-500/40 shadow-sm'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-                }`}
+                  }`}
               >
                 <Layers className="w-4 h-4" />
                 <span>Data URI</span>
@@ -283,11 +277,10 @@ export const SvgCleanerTool: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setActiveTab('react')}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-                  activeTab === 'react'
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${activeTab === 'react'
                     ? 'bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 border border-cyan-500/40 shadow-sm'
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-                }`}
+                  }`}
               >
                 <FileCode className="w-4 h-4" />
                 <span>React TSX</span>
@@ -295,7 +288,7 @@ export const SvgCleanerTool: React.FC = () => {
             </div>
 
             {/* Visual Preview Box */}
-            <div className="mt-4 p-4 rounded-xl bg-slate-100 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 flex items-center justify-center min-h-[120px]">
+            <div className="mt-4 p-4 rounded-xl bg-slate-100 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 flex items-center justify-center min-h-30">
               {result.cleanedSvg ? (
                 <div
                   className="w-20 h-20 flex items-center justify-center text-cyan-600 dark:text-cyan-400 [&>svg]:w-full [&>svg]:h-full"
