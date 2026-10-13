@@ -13,18 +13,45 @@ import {
   ArrowRightLeft,
 } from 'lucide-react';
 
+// Значения по умолчанию: стартовые для полей и запасные для расчётов, когда поле пустое
+const DEFAULTS = {
+  baseFontSize: 16,
+  pxInput: 24,
+  minPx: 16,
+  maxPx: 32,
+  minViewport: 320,
+  maxViewport: 1280,
+} as const;
+
+// Текст из поля -> число. Пусто или не число -> дефолт (только для расчётов, поле не трогаем)
+const toNum = (value: string, fallback: number): number => {
+  const n = parseFloat(value);
+  return Number.isFinite(n) ? n : fallback;
+};
+
 export const PxToRemTool: React.FC = () => {
   const { t, showToast } = useLanguage();
-  const [baseFontSize, setBaseFontSize] = useState<number>(16);
+
+  // Поля хранят ровно то, что ввёл пользователь (строку), чтобы их можно было очистить
+  const [baseFontSizeStr, setBaseFontSizeStr] = useState<string>(String(DEFAULTS.baseFontSize));
 
   // Single PX input state
-  const [pxInput, setPxInput] = useState<number>(24);
+  const [pxInputStr, setPxInputStr] = useState<string>(String(DEFAULTS.pxInput));
 
   // Fluid typography states
-  const [minPx, setMinPx] = useState<number>(16);
-  const [maxPx, setMaxPx] = useState<number>(32);
-  const [minViewport, setMinViewport] = useState<number>(320);
-  const [maxViewport, setMaxViewport] = useState<number>(1280);
+  const [minPxStr, setMinPxStr] = useState<string>(String(DEFAULTS.minPx));
+  const [maxPxStr, setMaxPxStr] = useState<string>(String(DEFAULTS.maxPx));
+  const [minViewportStr, setMinViewportStr] = useState<string>(String(DEFAULTS.minViewport));
+  const [maxViewportStr, setMaxViewportStr] = useState<string>(String(DEFAULTS.maxViewport));
+
+  // Числа для расчётов
+  const parsedBase = toNum(baseFontSizeStr, DEFAULTS.baseFontSize);
+  const baseFontSize = parsedBase > 0 ? parsedBase : DEFAULTS.baseFontSize; // 0 и минус сломали бы деление
+  const pxInput = toNum(pxInputStr, DEFAULTS.pxInput);
+  const minPx = toNum(minPxStr, DEFAULTS.minPx);
+  const maxPx = toNum(maxPxStr, DEFAULTS.maxPx);
+  const minViewport = toNum(minViewportStr, DEFAULTS.minViewport);
+  const maxViewport = toNum(maxViewportStr, DEFAULTS.maxViewport);
 
   const remValue = pxToRem(pxInput, baseFontSize);
   const emValue = remValue;
@@ -63,8 +90,9 @@ export const PxToRemTool: React.FC = () => {
           <span className="text-slate-600 dark:text-slate-400 font-medium">{t.pxToRemTool.baseFontSize}</span>
           <input
             type="number"
-            value={baseFontSize}
-            onChange={(e) => setBaseFontSize(Number(e.target.value) || 16)}
+            value={baseFontSizeStr}
+            placeholder={String(DEFAULTS.baseFontSize)}
+            onChange={(e) => setBaseFontSizeStr(e.target.value)}
             className="w-16 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-lg px-2 py-1 text-center font-mono font-bold text-cyan-600 dark:text-cyan-400 text-sm outline-none focus:border-cyan-500"
           />
         </div>
@@ -85,8 +113,9 @@ export const PxToRemTool: React.FC = () => {
               <div className="relative">
                 <input
                   type="number"
-                  value={pxInput}
-                  onChange={(e) => setPxInput(Number(e.target.value) || 0)}
+                  value={pxInputStr}
+                  placeholder={String(DEFAULTS.pxInput)}
+                  onChange={(e) => setPxInputStr(e.target.value)}
                   className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl px-4 py-3 text-xl font-mono text-slate-900 dark:text-slate-100 outline-none focus:border-cyan-500 transition-colors"
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-mono text-slate-400">
@@ -141,8 +170,9 @@ export const PxToRemTool: React.FC = () => {
               <label className="block text-slate-600 dark:text-slate-400 mb-1">{t.pxToRemTool.minPx}</label>
               <input
                 type="number"
-                value={minPx}
-                onChange={(e) => setMinPx(Number(e.target.value) || 0)}
+                value={minPxStr}
+                placeholder={String(DEFAULTS.minPx)}
+                onChange={(e) => setMinPxStr(e.target.value)}
                 className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg p-2.5 font-mono text-slate-900 dark:text-slate-200 outline-none focus:border-cyan-500"
               />
             </div>
@@ -151,8 +181,9 @@ export const PxToRemTool: React.FC = () => {
               <label className="block text-slate-600 dark:text-slate-400 mb-1">{t.pxToRemTool.maxPx}</label>
               <input
                 type="number"
-                value={maxPx}
-                onChange={(e) => setMaxPx(Number(e.target.value) || 0)}
+                value={maxPxStr}
+                placeholder={String(DEFAULTS.maxPx)}
+                onChange={(e) => setMaxPxStr(e.target.value)}
                 className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg p-2.5 font-mono text-slate-900 dark:text-slate-200 outline-none focus:border-cyan-500"
               />
             </div>
@@ -161,8 +192,9 @@ export const PxToRemTool: React.FC = () => {
               <label className="block text-slate-600 dark:text-slate-400 mb-1">{t.pxToRemTool.minViewport}</label>
               <input
                 type="number"
-                value={minViewport}
-                onChange={(e) => setMinViewport(Number(e.target.value) || 0)}
+                value={minViewportStr}
+                placeholder={String(DEFAULTS.minViewport)}
+                onChange={(e) => setMinViewportStr(e.target.value)}
                 className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg p-2.5 font-mono text-slate-900 dark:text-slate-200 outline-none focus:border-cyan-500"
               />
             </div>
@@ -171,8 +203,9 @@ export const PxToRemTool: React.FC = () => {
               <label className="block text-slate-600 dark:text-slate-400 mb-1">{t.pxToRemTool.maxViewport}</label>
               <input
                 type="number"
-                value={maxViewport}
-                onChange={(e) => setMaxViewport(Number(e.target.value) || 0)}
+                value={maxViewportStr}
+                placeholder={String(DEFAULTS.maxViewport)}
+                onChange={(e) => setMaxViewportStr(e.target.value)}
                 className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-lg p-2.5 font-mono text-slate-900 dark:text-slate-200 outline-none focus:border-cyan-500"
               />
             </div>
@@ -256,4 +289,3 @@ export const PxToRemTool: React.FC = () => {
     </div>
   );
 };
-
