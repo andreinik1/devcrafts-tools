@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLanguage } from '../../context/LanguageContext';
 import { Sparkles } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 
 interface AdSlotProps {
   type?: 'banner' | 'sidebar' | 'in-article';
@@ -17,7 +18,10 @@ export const AdSlot: React.FC<AdSlotProps> = ({
 }) => {
   const { t } = useLanguage();
 
-  const isDevPlaceholder = true; // In production with real script, AdSense injects ins tag
+  const location = useLocation();
+  const ww = true;
+
+  const isDevPlaceholder = true;
 
   const layoutStyles = {
     banner: 'w-full h-24 sm:h-28 my-6',
@@ -25,7 +29,40 @@ export const AdSlot: React.FC<AdSlotProps> = ({
     'in-article': 'w-full h-32 sm:h-36 my-8',
   }[type];
 
-  return (
+  return (ww ? (
+    <div className={`w-full my-6 p-6 rounded-xl border border-white/10
+    bg-linear-to-r from-white/3 to-white/1 backdrop-blur-sm 
+    flex items-center justify-between gap-4 text-center
+    sm:text-left transition-all hover:border-white/20
+    ${location.pathname === '/contact' ? 'flex-col' : 'flex-col sm:flex-row'}
+    `}
+    >
+      <div className="space-y-1">
+        <div className="flex items-center justify-center sm:justify-start gap-2">
+          <span className="inline-block w-2 h-2 rounded-full bg-[#f792fc] animate-pulse"></span>
+          <span className="text-xs font-medium tracking-wider uppercase text-white/60">
+            Developer Space <br />
+            {location.pathname}
+          </span>
+        </div>
+        <h4 className="text-sm font-semibold text-white">
+          Support VibeDev Tools 🚀
+        </h4>
+        <p className="text-xs text-white/50 max-w-md">
+          Fast, 100% client-side utilities built to speed up your daily frontend workflow. Clean code, zero backend tracking.
+        </p>
+      </div>
+
+      <a
+        href="https://github.com/andreinik1"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="px-4 py-2 text-xs font-medium text-white bg-white/10 hover:bg-white/20 rounded-lg transition-colors border border-white/10 shrink-0"
+      >
+        Star on GitHub / Sponsor →
+      </a>
+    </div>
+  ) : (
     <div
       className={`relative overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/40 backdrop-blur-md flex flex-col items-center justify-center p-4 transition-all hover:border-slate-300 dark:hover:border-slate-700/60 shadow-sm ${layoutStyles} ${className}`}
     >
@@ -55,6 +92,8 @@ export const AdSlot: React.FC<AdSlotProps> = ({
         />
       )}
     </div>
-  );
+  )
+
+  )
 };
 
