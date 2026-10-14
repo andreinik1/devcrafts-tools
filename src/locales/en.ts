@@ -395,5 +395,11 @@ export const en = {
       title: "Google AdSense Certified",
       desc: "Strictly engineered for monetization compliance with non-intrusive placeholders and full SEO documentation."
     }
-  }
+  },
+  devSpace: {
+    badge: "Developer Space",
+    title: "Support VibeDev Tools 🚀",
+    description: "Fast, 100% client-side utilities built to speed up your daily frontend workflow. Clean code, zero backend tracking.",
+    button: "Star on GitHub / Sponsor →"
+  },
 };

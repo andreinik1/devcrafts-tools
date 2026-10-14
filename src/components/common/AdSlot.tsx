@@ -41,25 +41,24 @@ export const AdSlot: React.FC<AdSlotProps> = ({
         <div className="flex items-center justify-center sm:justify-start gap-2">
           <span className="inline-block w-2 h-2 rounded-full bg-[#f792fc] animate-pulse"></span>
           <span className="text-xs font-medium tracking-wider uppercase text-white/60">
-            Developer Space <br />
-            {location.pathname}
+            {t.devSpace.badge}
           </span>
         </div>
         <h4 className="text-sm font-semibold text-white">
-          Support VibeDev Tools 🚀
+          {t.devSpace.title}
         </h4>
         <p className="text-xs text-white/50 max-w-md">
-          Fast, 100% client-side utilities built to speed up your daily frontend workflow. Clean code, zero backend tracking.
+          {t.devSpace.description}
         </p>
       </div>
 
       <a
-        href="https://github.com/andreinik1"
+        href="https://github.com/andreinik1/devcrafts-tools.git"
         target="_blank"
         rel="noopener noreferrer"
         className="px-4 py-2 text-xs font-medium text-white bg-white/10 hover:bg-white/20 rounded-lg transition-colors border border-white/10 shrink-0"
       >
-        Star on GitHub / Sponsor →
+        {t.devSpace.button}
       </a>
     </div>
   ) : (
