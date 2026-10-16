@@ -42,7 +42,7 @@ export const en = {
     forDevs: "for Web Developers & Designers",
   },
   hero: {
-    badge: "⚡ Browser-Powered & Zero Server Latency",
+    badge: "Browser-Powered & Zero Server Latency",
     titlePrefix: "Essential Micro-Tools for Modern",
     titleHighlight: "Developers & Designers",
     description: "Boost your workflow with hyper-fast, 100% client-side utilities. Convert & compress images, generate Open Graph meta tags, clean SVGs, create TypeScript schemas, and design glassmorphism shadows instantly.",
