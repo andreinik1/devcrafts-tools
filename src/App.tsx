@@ -11,6 +11,7 @@ import { AboutPage } from './pages/AboutPage';
 import { ContactPage } from './pages/ContactPage';
 import { PrivacyPolicyPage } from './pages/PrivacyPolicyPage';
 import { Analytics } from "@vercel/analytics/react"
+import { WorkspacesPage } from './pages/WorkspacesPage';
 
 const AppLayout: React.FC = () => {
   useSEO();
@@ -22,6 +23,7 @@ const AppLayout: React.FC = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/tools/:toolId" element={<ToolPage />} />
+          <Route path="/workspaces/:workspaceId" element={<WorkspacesPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />

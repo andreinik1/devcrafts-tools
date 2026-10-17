@@ -139,9 +139,6 @@ export const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* Top Banner AdSlot */}
-      <AdSlot type="banner" slotId="9876543210" />
-
       {/* Tools Grid Section */}
       <section className="space-y-6">
         <div className="flex items-center justify-between">

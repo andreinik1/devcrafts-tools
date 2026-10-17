@@ -341,8 +341,8 @@ export const CssShadowTool: React.FC = () => {
             <div
               className={`relative h-64 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-center p-6 overflow-hidden transition-colors ${
                 canvasBg === 'dark'
-                  ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100'
-                  : 'bg-gradient-to-br from-slate-100 via-slate-200 to-slate-300 text-slate-900'
+                  ? 'bg-linear-to-br from-slate-950 via-slate-900 to-slate-950 text-slate-100'
+                  : 'bg-linear-to-br from-slate-100 via-slate-200 to-slate-300 text-slate-900'
               }`}
             >
               {/* Colorful background blobs for testing glassmorphism blur */}

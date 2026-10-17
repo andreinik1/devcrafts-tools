@@ -17,6 +17,10 @@ import {
   Moon,
   Image,
   Share2,
+  Code2,
+  Palette,
+  Database,
+  Globe
 } from 'lucide-react';
 
 export const Header: React.FC = () => {
@@ -25,6 +29,34 @@ export const Header: React.FC = () => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [toolsDropdownOpen, setToolsDropdownOpen] = useState(false);
+  const [workspacesDropdownOpen, setWorkspacesDropdownOpen] = useState(false);
+
+  const workspacesList = [
+    {
+      name: t.workspacesList.frontendDev.name,
+      path: '/workspaces/frontend',
+      icon: Code2,
+      desc: t.workspacesList.frontendDev.desc,
+    },
+    {
+      name: t.workspacesList.designToCode.name,
+      path: '/workspaces/design',
+      icon: Palette,
+      desc: t.workspacesList.designToCode.desc,
+    },
+    {
+      name: t.workspacesList.apiAndData.name,
+      path: '/workspaces/api-data',
+      icon: Database,
+      desc: t.workspacesList.apiAndData.desc,
+    },
+    {
+      name: t.workspacesList.seoAndMeta.name,
+      path: '/workspaces/seo-meta',
+      icon: Globe,
+      desc: t.workspacesList.seoAndMeta.desc,
+    },
+  ];
 
   const toolsList = [
     {
@@ -86,9 +118,8 @@ export const Header: React.FC = () => {
         <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600 dark:text-slate-300">
           <Link
             to="/"
-            className={`transition-colors ${
-              isActive('/') ? 'text-cyan-600 dark:text-cyan-400 font-semibold' : 'hover:text-slate-900 dark:hover:text-slate-100'
-            }`}
+            className={`transition-colors ${isActive('/') ? 'text-cyan-600 dark:text-cyan-400 font-semibold' : 'hover:text-slate-900 dark:hover:text-slate-100'
+              }`}
           >
             {t.nav.home}
           </Link>
@@ -101,11 +132,10 @@ export const Header: React.FC = () => {
           >
             <button
               type="button"
-              className={`flex items-center gap-1 py-2 transition-colors cursor-pointer ${
-                location.pathname.startsWith('/tools')
-                  ? 'text-cyan-600 dark:text-cyan-400 font-semibold'
-                  : 'hover:text-slate-900 dark:hover:text-slate-100'
-              }`}
+              className={`flex items-center gap-1 py-2 transition-colors cursor-pointer ${location.pathname.startsWith('/tools')
+                ? 'text-cyan-600 dark:text-cyan-400 font-semibold'
+                : 'hover:text-slate-900 dark:hover:text-slate-100'
+                }`}
             >
               <span>{t.nav.tools}</span>
               <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${toolsDropdownOpen ? 'rotate-180' : ''}`} />
@@ -119,11 +149,10 @@ export const Header: React.FC = () => {
                     <Link
                       key={tool.path}
                       to={tool.path}
-                      className={`flex items-start gap-3 p-2.5 rounded-xl transition-all ${
-                        isActive(tool.path)
-                          ? 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20'
-                          : 'hover:bg-slate-100 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100'
-                      }`}
+                      className={`flex items-start gap-3 p-2.5 rounded-xl transition-all ${isActive(tool.path)
+                        ? 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20'
+                        : 'hover:bg-slate-100 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100'
+                        }`}
                     >
                       <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800/80 text-cyan-500 dark:text-cyan-400 shrink-0 mt-0.5">
                         <Icon className="w-4 h-4" />
@@ -139,20 +168,71 @@ export const Header: React.FC = () => {
             )}
           </div>
 
+          {/* Workspaces Dropdown */}
+          <div
+            className="relative"
+            onMouseEnter={() => setWorkspacesDropdownOpen(true)}
+            onMouseLeave={() => setWorkspacesDropdownOpen(false)}
+          >
+            <button
+              type="button"
+              className={`flex items-center gap-1 py-2 transition-colors cursor-pointer ${location.pathname.startsWith('/workspaces')
+                ? 'text-cyan-600 dark:text-cyan-400 font-semibold'
+                : 'hover:text-slate-900 dark:hover:text-slate-100'
+                }`}
+            >
+              <span>{t.nav.workspaces}</span>
+              <ChevronDown
+                className={`w-3.5 h-3.5 transition-transform duration-200 ${workspacesDropdownOpen ? 'rotate-180' : ''
+                  }`}
+              />
+            </button>
+
+            {workspacesDropdownOpen && (
+              <div className="absolute left-0 top-full w-80 p-2 rounded-2xl bg-white/95 dark:bg-slate-900/95 border border-slate-200 dark:border-slate-800 shadow-2xl backdrop-blur-xl animate-in fade-in duration-150 grid grid-cols-1 gap-1">
+                {workspacesList.map((workspace) => {
+                  const Icon = workspace.icon;
+                  return (
+                    <Link
+                      key={workspace.path}
+                      to={workspace.path}
+                      className={`flex items-start gap-3 p-2.5 rounded-xl transition-all ${isActive(workspace.path)
+                        ? 'bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20'
+                        : 'hover:bg-slate-100 dark:hover:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100'
+                        }`}
+                    >
+                      <div className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800/80 text-cyan-500 dark:text-cyan-400 shrink-0 mt-0.5">
+                        <Icon className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <div className="font-semibold text-xs text-slate-900 dark:text-slate-100">
+                          {workspace.name}
+                        </div>
+                        <div className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5">
+                          {workspace.desc}
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* About  */}
           <Link
             to="/about"
-            className={`transition-colors ${
-              isActive('/about') ? 'text-cyan-600 dark:text-cyan-400 font-semibold' : 'hover:text-slate-900 dark:hover:text-slate-100'
-            }`}
+            className={`transition-colors ${isActive('/about') ? 'text-cyan-600 dark:text-cyan-400 font-semibold' : 'hover:text-slate-900 dark:hover:text-slate-100'
+              }`}
           >
             {t.nav.about}
           </Link>
 
+          {/* Contacts */}
           <Link
             to="/contact"
-            className={`transition-colors ${
-              isActive('/contact') ? 'text-cyan-600 dark:text-cyan-400 font-semibold' : 'hover:text-slate-900 dark:hover:text-slate-100'
-            }`}
+            className={`transition-colors ${isActive('/contact') ? 'text-cyan-600 dark:text-cyan-400 font-semibold' : 'hover:text-slate-900 dark:hover:text-slate-100'
+              }`}
           >
             {t.nav.contact}
           </Link>

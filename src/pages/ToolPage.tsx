@@ -126,11 +126,8 @@ export const ToolPage: React.FC = () => {
 
   return (
     <div className="space-y-8">
-      {/* Top Banner AdSlot */}
-      <AdSlot type="banner" slotId="1122334455" />
-
       {/* Main Tool Component */}
-      <div className="min-h-[450px]">{renderToolComponent()}</div>
+      <div className="min-h-112.5]">{renderToolComponent()}</div>
 
       {/* In-Article AdSlot */}
       <AdSlot type="in-article" slotId="5566778899" />

@@ -285,7 +285,7 @@ export const OpenGraphGeneratorTool: React.FC = () => {
               {activePreviewTab === 'twitter' && (
                 /* Twitter Summary Large Image Card */
                 <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 overflow-hidden shadow-lg transition-all">
-                  <div className="aspect-[2/1] w-full bg-slate-950 overflow-hidden relative">
+                  <div className="aspect-2/1 w-full bg-slate-950 overflow-hidden relative">
                     {config.imageUrl ? (
                       <img
                         src={config.imageUrl}
