@@ -129,12 +129,9 @@ export const ToolPage: React.FC = () => {
       {/* Main Tool Component */}
       <div className="min-h-112.5]">{renderToolComponent()}</div>
 
-      {/* In-Article AdSlot */}
-      <AdSlot type="in-article" slotId="5566778899" />
-
       {/* SEO Article & Sidebar Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-3">
           <SEOContent
             title={seoData.title}
             paragraphs={seoData.paragraphs}
@@ -144,13 +141,10 @@ export const ToolPage: React.FC = () => {
           <FAQAccordion items={seoData.faq} />
         </div>
 
-        {/* Sidebar AdSlot */}
-        <div className="lg:col-span-1 space-y-6">
-          <div className="sticky top-24">
-            <AdSlot type="sidebar" slotId="9988776655" />
-          </div>
-        </div>
       </div>
+
+      {/* In-Article AdSlot */}
+      <AdSlot type="in-article" slotId="5566778899" />
     </div>
   );
 };

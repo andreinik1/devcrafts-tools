@@ -15,6 +15,7 @@ export const ru: typeof en = {
     minifying: "Минифицировать",
     searchPlaceholder: "Поиск инструментов (Изображения, Open Graph, SVG, JSON, REM)...",
     allTools: "Все микро-инструменты",
+    allWorkspaces: "Все Воркспейсы",
     exploreTools: "Обзор инструментов",
     tryNow: "Открыть инструмент",
     faqTitle: "Часто задаваемые вопросы (FAQ)",

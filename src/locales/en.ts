@@ -13,6 +13,7 @@ export const en = {
     minifying: "Minify",
     searchPlaceholder: "Search tools (e.g., Image, Open Graph, SVG, JSON, REM)...",
     allTools: "All Micro-Tools",
+    allWorkspaces: "All Workspaces",
     exploreTools: "Explore Tools",
     tryNow: "Try Tool",
     faqTitle: "Frequently Asked Questions",

@@ -15,6 +15,7 @@ export const uk: typeof en = {
     minifying: "Мініфікувати",
     searchPlaceholder: "Пошук інструментів (Зображення, Open Graph, SVG, JSON, REM)...",
     allTools: "Усі інструменти",
+    allWorkspaces: "Усі Воркспейси",
     exploreTools: "Огляд інструментів",
     tryNow: "Спробувати",
     faqTitle: "Часті запитання (FAQ)",

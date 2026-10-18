@@ -68,6 +68,35 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
+          {/* Quick Workspaces Links */}
+          <div className="space-y-3">
+            <h4 className="text-sm font-semibold uppercase tracking-wider text-slate-900 dark:text-slate-200">
+              {t.common.allWorkspaces}
+            </h4>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link to="/workspaces/frontend" className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
+                  {t.workspacesList.frontendDev.name}
+                </Link>
+              </li>
+              <li>
+                <Link to="/workspaces/design" className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
+                  {t.workspacesList.designToCode.name}
+                </Link>
+              </li>
+              <li>
+                <Link to="/workspaces/api-data" className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
+                  {t.workspacesList.apiAndData.name}
+                </Link>
+              </li>
+              <li>
+                <Link to="/workspaces/seo-meta" className="hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors">
+                  {t.workspacesList.seoAndMeta.name}
+                </Link>
+              </li>
+            </ul>
+          </div>
+
           {/* Company & Legal */}
           <div className="space-y-3">
             <h4 className="text-sm font-semibold uppercase tracking-wider text-slate-900 dark:text-slate-200">
