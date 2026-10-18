@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
   Wrench,
   Layers,
@@ -153,96 +153,171 @@ function prepareSvgForRasterization(svgString: string): string {
   return prepared;
 }
 
-// Bake SVG or Image with CSS Box Shadow / Glassmorphism onto Canvas and return PNG
+// Bake SVG or Image with CSS Shadow / Glassmorphism directly onto Graphic without giant empty space
 async function bakeAssetWithShadow(
   assetDataUri: string,
   shadowMode: 'shadow' | 'glass',
+  shadowTarget: 'contour' | 'box',
   shadowConfig: ShadowConfig,
-  glassConfig: GlassConfig
+  glassConfig: GlassConfig,
+  glassPadding: number
 ): Promise<{ dataUrl: string; blob: Blob }> {
-  const cardW = 320;
-  const cardH = 320;
-  const margin = Math.max(
-    70,
-    shadowMode === 'shadow'
-      ? Math.abs(shadowConfig.offsetX) + Math.abs(shadowConfig.offsetY) + shadowConfig.blur + shadowConfig.spread + 25
-      : 70
-  );
+  // Load asset to get natural dimensions
+  const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+    const i = new Image();
+    i.crossOrigin = 'anonymous';
+    i.onload = () => resolve(i);
+    i.onerror = () => reject(new Error('Failed to load asset image for baking'));
+    i.src = assetDataUri;
+  });
+
+  const renderSize = 240;
+  const aspect = img.naturalWidth && img.naturalHeight ? img.naturalWidth / img.naturalHeight : 1;
+  const targetW = aspect >= 1 ? renderSize : Math.round(renderSize * aspect);
+  const targetH = aspect >= 1 ? Math.round(renderSize / aspect) : renderSize;
+
+  const hex = shadowConfig.color.replace('#', '');
+  const r = parseInt(hex.substring(0, 2), 16) || 0;
+  const g = parseInt(hex.substring(2, 4), 16) || 0;
+  const b = parseInt(hex.substring(4, 6), 16) || 0;
+  const shadowRgba = `rgba(${r}, ${g}, ${b}, ${shadowConfig.opacity})`;
+
+  if (shadowMode === 'shadow' && shadowTarget === 'contour') {
+    // 1. DIRECT CONTOUR DROP SHADOW: Shadow adheres strictly to the graphic's alpha silhouette with 0 container box!
+    const margin = Math.max(
+      40,
+      Math.abs(shadowConfig.offsetX) + Math.abs(shadowConfig.offsetY) + shadowConfig.blur * 2 + 10
+    );
+
+    const canvas = document.createElement('canvas');
+    canvas.width = targetW + margin * 2;
+    canvas.height = targetH + margin * 2;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('Canvas 2D context not available');
+
+    ctx.save();
+    ctx.shadowColor = shadowRgba;
+    ctx.shadowOffsetX = shadowConfig.offsetX;
+    ctx.shadowOffsetY = shadowConfig.offsetY;
+    ctx.shadowBlur = shadowConfig.blur;
+    ctx.drawImage(img, margin, margin, targetW, targetH);
+    ctx.restore();
+
+    const dataUrl = canvas.toDataURL('image/png');
+    const blob = await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob((bl) => (bl ? resolve(bl) : reject(new Error('toBlob failed'))), 'image/png');
+    });
+    return { dataUrl, blob };
+  }
+
+  if (shadowMode === 'shadow' && shadowTarget === 'box') {
+    // 2. TIGHT BOX SHADOW: Hugs the image tightly with smooth corners, no giant empty container!
+    const margin = Math.max(
+      40,
+      Math.abs(shadowConfig.offsetX) + Math.abs(shadowConfig.offsetY) + shadowConfig.blur + shadowConfig.spread + 10
+    );
+
+    const canvas = document.createElement('canvas');
+    canvas.width = targetW + margin * 2;
+    canvas.height = targetH + margin * 2;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('Canvas 2D context not available');
+
+    const cardX = margin;
+    const cardY = margin;
+    const radius = 20;
+
+    ctx.save();
+    if (!shadowConfig.inset) {
+      ctx.shadowColor = shadowRgba;
+      ctx.shadowOffsetX = shadowConfig.offsetX;
+      ctx.shadowOffsetY = shadowConfig.offsetY;
+      ctx.shadowBlur = shadowConfig.blur;
+    }
+    ctx.fillStyle = '#0f172a';
+    ctx.beginPath();
+    const context2d = ctx as unknown as { roundRect?: (x: number, y: number, w: number, h: number, r: number) => void };
+    if (typeof context2d.roundRect === 'function') {
+      context2d.roundRect(cardX, cardY, targetW, targetH, radius);
+    } else {
+      ctx.rect(cardX, cardY, targetW, targetH);
+    }
+    ctx.fill();
+    ctx.restore();
+
+    // Clip & draw image
+    ctx.save();
+    ctx.beginPath();
+    if (typeof context2d.roundRect === 'function') {
+      context2d.roundRect(cardX, cardY, targetW, targetH, radius);
+    } else {
+      ctx.rect(cardX, cardY, targetW, targetH);
+    }
+    ctx.clip();
+    ctx.drawImage(img, cardX, cardY, targetW, targetH);
+    ctx.restore();
+
+    const dataUrl = canvas.toDataURL('image/png');
+    const blob = await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob((bl) => (bl ? resolve(bl) : reject(new Error('toBlob failed'))), 'image/png');
+    });
+    return { dataUrl, blob };
+  }
+
+  // 3. SNUG GLASSMORPHISM TILE: Hugs the image with snug padding (8px or 16px) instead of giant empty space
+  const pad = glassPadding;
+  const glassW = targetW + pad * 2;
+  const glassH = targetH + pad * 2;
+  const margin = Math.max(40, glassConfig.blur + 15);
 
   const canvas = document.createElement('canvas');
-  canvas.width = cardW + margin * 2;
-  canvas.height = cardH + margin * 2;
+  canvas.width = glassW + margin * 2;
+  canvas.height = glassH + margin * 2;
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('Canvas 2D context not available');
 
   const cardX = margin;
   const cardY = margin;
-  const radius = 28;
+  const radius = 24;
 
-  // Draw Card with Box Shadow
+  // Glass background
   ctx.save();
-  if (shadowMode === 'shadow' && !shadowConfig.inset) {
-    ctx.shadowOffsetX = shadowConfig.offsetX;
-    ctx.shadowOffsetY = shadowConfig.offsetY;
-    ctx.shadowBlur = shadowConfig.blur;
-
-    const hex = shadowConfig.color.replace('#', '');
-    const r = parseInt(hex.substring(0, 2), 16) || 0;
-    const g = parseInt(hex.substring(2, 4), 16) || 0;
-    const b = parseInt(hex.substring(4, 6), 16) || 0;
-    ctx.shadowColor = `rgba(${r}, ${g}, ${b}, ${shadowConfig.opacity})`;
-  }
-
-  ctx.fillStyle = shadowMode === 'shadow' ? '#0f172a' : glassConfig.bgColor;
+  ctx.fillStyle = glassConfig.bgColor;
+  ctx.globalAlpha = glassConfig.bgOpacity;
   ctx.beginPath();
   const context2d = ctx as unknown as { roundRect?: (x: number, y: number, w: number, h: number, r: number) => void };
   if (typeof context2d.roundRect === 'function') {
-    context2d.roundRect(cardX, cardY, cardW, cardH, radius);
+    context2d.roundRect(cardX, cardY, glassW, glassH, radius);
   } else {
-    ctx.rect(cardX, cardY, cardW, cardH);
+    ctx.rect(cardX, cardY, glassW, glassH);
   }
   ctx.fill();
   ctx.restore();
 
-  // If Glassmorphism mode, draw styled border
-  if (shadowMode === 'glass') {
-    ctx.save();
-    const borderHex = glassConfig.borderColor.replace('#', '');
-    const br = parseInt(borderHex.substring(0, 2), 16) || 255;
-    const bg = parseInt(borderHex.substring(2, 4), 16) || 255;
-    const bb = parseInt(borderHex.substring(4, 6), 16) || 255;
-    ctx.strokeStyle = `rgba(${br}, ${bg}, ${bb}, ${glassConfig.borderOpacity})`;
-    ctx.lineWidth = glassConfig.borderWidth;
-    ctx.beginPath();
-    if (typeof context2d.roundRect === 'function') {
-      context2d.roundRect(cardX, cardY, cardW, cardH, radius);
-    } else {
-      ctx.rect(cardX, cardY, cardW, cardH);
-    }
-    ctx.stroke();
-    ctx.restore();
+  // Glass border
+  ctx.save();
+  const borderHex = glassConfig.borderColor.replace('#', '');
+  const br = parseInt(borderHex.substring(0, 2), 16) || 255;
+  const bg = parseInt(borderHex.substring(2, 4), 16) || 255;
+  const bb = parseInt(borderHex.substring(4, 6), 16) || 255;
+  ctx.strokeStyle = `rgba(${br}, ${bg}, ${bb}, ${glassConfig.borderOpacity})`;
+  ctx.lineWidth = glassConfig.borderWidth;
+  ctx.beginPath();
+  if (typeof context2d.roundRect === 'function') {
+    context2d.roundRect(cardX, cardY, glassW, glassH, radius);
+  } else {
+    ctx.rect(cardX, cardY, glassW, glassH);
   }
+  ctx.stroke();
+  ctx.restore();
 
-  // Draw asset centered inside card
-  await new Promise<void>((resolve, reject) => {
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      const assetRenderSize = 160;
-      const assetX = cardX + (cardW - assetRenderSize) / 2;
-      const assetY = cardY + (cardH - assetRenderSize) / 2;
-      ctx.drawImage(img, assetX, assetY, assetRenderSize, assetRenderSize);
-      resolve();
-    };
-    img.onerror = () => reject(new Error('Failed to load asset image for baking'));
-    img.src = assetDataUri;
-  });
+  // Center image inside snug glass tile
+  ctx.drawImage(img, cardX + pad, cardY + pad, targetW, targetH);
 
   const dataUrl = canvas.toDataURL('image/png');
   const blob = await new Promise<Blob>((resolve, reject) => {
-    canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('Failed to generate PNG blob'))), 'image/png');
+    canvas.toBlob((bl) => (bl ? resolve(bl) : reject(new Error('toBlob failed'))), 'image/png');
   });
-
   return { dataUrl, blob };
 }
 
@@ -297,13 +372,18 @@ export const DesignAssetsWorkspace: React.FC = () => {
 
   // --- CSS Shadow & Glassmorphism State ---
   const [shadowMode, setShadowMode] = useState<'shadow' | 'glass'>('shadow');
+  // shadowTarget: 'contour' directly hugs the graphic's transparency contour with 0 gap / no card background!
+  // 'box' puts a tight border around the image frame.
+  const [shadowTarget, setShadowTarget] = useState<'contour' | 'box'>('contour');
+  const [glassPadding, setGlassPadding] = useState<number>(12); // Snug padding (8px or 16px) instead of giant container
+
   const [shadowConfig, setShadowConfig] = useState<ShadowConfig>({
     offsetX: 0,
-    offsetY: 12,
-    blur: 28,
-    spread: -4,
+    offsetY: 10,
+    blur: 24,
+    spread: 0,
     color: '#06b6d4',
-    opacity: 0.35,
+    opacity: 0.5,
     inset: false,
   });
   const [glassConfig, setGlassConfig] = useState<GlassConfig>({
@@ -319,53 +399,75 @@ export const DesignAssetsWorkspace: React.FC = () => {
   const shadowResult = useMemo(() => generateBoxShadow(shadowConfig), [shadowConfig]);
   const glassResult = useMemo(() => generateGlassmorphism(glassConfig), [glassConfig]);
 
+  // Drop-shadow string for direct contour application
+  const dropShadowCss = useMemo(() => {
+    const hex = shadowConfig.color.replace('#', '');
+    const r = parseInt(hex.substring(0, 2), 16) || 0;
+    const g = parseInt(hex.substring(2, 4), 16) || 0;
+    const b = parseInt(hex.substring(4, 6), 16) || 0;
+    const rgba = `rgba(${r}, ${g}, ${b}, ${shadowConfig.opacity.toFixed(2)})`;
+    return `drop-shadow(${shadowConfig.offsetX}px ${shadowConfig.offsetY}px ${shadowConfig.blur}px ${rgba})`;
+  }, [shadowConfig]);
+
+  const dropShadowTailwind = useMemo(() => {
+    const hex = shadowConfig.color.replace('#', '');
+    const r = parseInt(hex.substring(0, 2), 16) || 0;
+    const g = parseInt(hex.substring(2, 4), 16) || 0;
+    const b = parseInt(hex.substring(4, 6), 16) || 0;
+    const rgbaClean = `rgba(${r},${g},${b},${shadowConfig.opacity.toFixed(2)})`;
+    return `drop-shadow-[${shadowConfig.offsetX}px_${shadowConfig.offsetY}px_${shadowConfig.blur}px_${rgbaClean}]`;
+  }, [shadowConfig]);
+
   // --- Image Converter State ---
   const [targetFormat, setTargetFormat] = useState<'image/webp' | 'image/png' | 'image/jpeg'>('image/webp');
   const [quality, setQuality] = useState<number>(85);
   const [conversionResult, setConversionResult] = useState<ImageConversionResult | null>(null);
   const [isConverting, setIsConverting] = useState(false);
 
-  // Trigger conversion when activeAsset or conversion settings change
-  const runConversion = useCallback(
-    async (asset: ActiveAsset | null, format: 'image/webp' | 'image/png' | 'image/jpeg', q: number) => {
-      if (!asset) {
-        setConversionResult(null);
-        return;
-      }
+  // Convert the active asset whenever the asset or conversion settings change.
+  useEffect(() => {
+    if (!activeAsset) return;
+
+    let isCancelled = false;
+
+    const convertAsset = async () => {
       setIsConverting(true);
       try {
         let fileToConvert: File;
-        if (asset.type === 'svg') {
-          const preparedSvg = prepareSvgForRasterization(asset.rawContent);
+        if (activeAsset.type === 'svg') {
+          const preparedSvg = prepareSvgForRasterization(activeAsset.rawContent);
           const svgBlob = new Blob([preparedSvg], { type: 'image/svg+xml' });
-          fileToConvert = new File([svgBlob], asset.name.replace(/\.svg$/i, '') + '.svg', {
+          fileToConvert = new File([svgBlob], activeAsset.name.replace(/\.svg$/i, '') + '.svg', {
             type: 'image/svg+xml',
           });
-        } else if (asset.fileObj) {
-          fileToConvert = asset.fileObj;
+        } else if (activeAsset.fileObj) {
+          fileToConvert = activeAsset.fileObj;
         } else {
-          fileToConvert = dataUrlToFile(asset.rawContent, asset.name);
+          fileToConvert = dataUrlToFile(activeAsset.rawContent, activeAsset.name);
         }
 
-        const options: ImageConversionOptions = { format, quality: q };
+        const options: ImageConversionOptions = { format: targetFormat, quality };
         const res = await convertAndCompressImage(fileToConvert, options);
-        setConversionResult(res);
+        if (!isCancelled) {
+          setConversionResult(res);
+        }
       } catch (err) {
+        if (isCancelled) return;
         console.error('Image conversion error:', err);
         showToast('Failed to convert image. Please verify format support.', 'error');
       } finally {
-        setIsConverting(false);
+        if (!isCancelled) {
+          setIsConverting(false);
+        }
       }
-    },
-    [showToast]
-  );
+    };
 
-  // Auto-run conversion when active asset changes or compression params change
-  useEffect(() => {
-    if (activeAsset) {
-      runConversion(activeAsset, targetFormat, quality);
-    }
-  }, [activeAsset, targetFormat, quality, runConversion]);
+    void convertAsset();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [activeAsset, quality, showToast, targetFormat]);
 
   // Copy helper with visual feedback
   const handleCopy = (text: string, key: string) => {
@@ -582,36 +684,19 @@ export const DesignAssetsWorkspace: React.FC = () => {
     return activeAsset.rawContent;
   }, [activeAsset]);
 
-  // Combined styles for stage card
-  const stageCardStyle = useMemo(() => {
-    if (!applyShadowToCanvas) {
-      return {
-        backgroundColor: canvasBg === 'light' ? '#ffffff' : '#0f172a',
-      };
-    }
-    if (shadowMode === 'shadow') {
-      return {
-        boxShadow: shadowResult.css.replace('box-shadow: ', '').replace(';', ''),
-        backgroundColor: canvasBg === 'light' ? '#ffffff' : '#0f172a',
-      };
-    }
-    return {
-      backgroundColor: `rgba(${parseInt(glassConfig.bgColor.slice(1, 3), 16) || 255}, ${parseInt(glassConfig.bgColor.slice(3, 5), 16) || 255
-        }, ${parseInt(glassConfig.bgColor.slice(5, 7), 16) || 255}, ${glassConfig.bgOpacity})`,
-      backdropFilter: `blur(${glassConfig.blur}px)`,
-      WebkitBackdropFilter: `blur(${glassConfig.blur}px)`,
-      border: `${glassConfig.borderWidth}px solid rgba(${parseInt(glassConfig.borderColor.slice(1, 3), 16) || 255
-        }, ${parseInt(glassConfig.borderColor.slice(3, 5), 16) || 255}, ${parseInt(glassConfig.borderColor.slice(5, 7), 16) || 255
-        }, ${glassConfig.borderOpacity})`,
-    };
-  }, [applyShadowToCanvas, shadowMode, shadowResult, glassConfig, canvasBg]);
-
-  // Bake Shadow & Export PNG handler
+  // Bake Shadow & Export PNG handler (Zero giant card whitespace!)
   const handleBakeAndDownloadPng = async () => {
     if (!activeAsset) return;
     setIsBakingShadow(true);
     try {
-      const { blob } = await bakeAssetWithShadow(activeAssetDataUri, shadowMode, shadowConfig, glassConfig);
+      const { blob } = await bakeAssetWithShadow(
+        activeAssetDataUri,
+        shadowMode,
+        shadowTarget,
+        shadowConfig,
+        glassConfig,
+        glassPadding
+      );
       const filename = activeAsset.name.replace(/\.[^/.]+$/, '') + '-styled.png';
       handleDownloadFile(blob, filename, 'image/png');
     } catch (err) {
@@ -627,7 +712,14 @@ export const DesignAssetsWorkspace: React.FC = () => {
     if (!activeAsset) return;
     setIsBakingShadow(true);
     try {
-      const { dataUrl, blob } = await bakeAssetWithShadow(activeAssetDataUri, shadowMode, shadowConfig, glassConfig);
+      const { dataUrl, blob } = await bakeAssetWithShadow(
+        activeAssetDataUri,
+        shadowMode,
+        shadowTarget,
+        shadowConfig,
+        glassConfig,
+        glassPadding
+      );
       const bakedName = activeAsset.name.replace(/\.[^/.]+$/, '') + '-styled.png';
       const bakedFile = new File([blob], bakedName, { type: 'image/png' });
       setActiveAsset({
@@ -638,7 +730,7 @@ export const DesignAssetsWorkspace: React.FC = () => {
         size: blob.size,
       });
       setActiveToolTab('image-converter');
-      showToast('Shadow baked into graphic! Sent to Image Converter pipeline.', 'success');
+      showToast('Shadow baked directly into graphic! Sent to Image Converter pipeline.', 'success');
     } catch (err) {
       console.error('Bake shadow error:', err);
       showToast('Failed to bake shadow onto graphic.', 'error');
@@ -679,7 +771,7 @@ export const DesignAssetsWorkspace: React.FC = () => {
         </div>
       </div>
 
-      {/* --- 2. UNIFIED ASSET BAR & DROPZONE (Responsive & Clean on Large Screens) --- */}
+      {/* --- 2. UNIFIED ASSET BAR & DROPZONE (Clean, No-squash XL layout) --- */}
       <div
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -712,7 +804,7 @@ export const DesignAssetsWorkspace: React.FC = () => {
 
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className="font-bold text-slate-900 dark:text-slate-100 text-sm truncate max-w-[200px] sm:max-w-xs block">
+                <span className="font-bold text-slate-900 dark:text-slate-100 text-sm truncate max-w-50 sm:max-w-xs block">
                   {activeAsset?.name || dw.noAssetLoaded}
                 </span>
                 <span
@@ -734,7 +826,6 @@ export const DesignAssetsWorkspace: React.FC = () => {
 
           {/* Quick Actions & Demo Presets Row */}
           <div className="flex flex-wrap items-center gap-2 xl:justify-end">
-            {/* Upload Button */}
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
@@ -744,7 +835,6 @@ export const DesignAssetsWorkspace: React.FC = () => {
               <span>{dw.uploadBtn}</span>
             </button>
 
-            {/* Paste Code Button */}
             <button
               type="button"
               onClick={() => setIsPasteModalOpen(true)}
@@ -754,7 +844,6 @@ export const DesignAssetsWorkspace: React.FC = () => {
               <span>{dw.pasteBtn}</span>
             </button>
 
-            {/* Presets Separator & Selector */}
             <div className="h-5 w-px bg-slate-200 dark:bg-slate-800 hidden sm:block mx-1" />
 
             <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 hidden sm:inline">
@@ -860,10 +949,10 @@ export const DesignAssetsWorkspace: React.FC = () => {
               </div>
             </div>
 
-            {/* The Stage Viewport */}
+            {/* The Stage Viewport: The shadow adheres DIRECTLY to the graphic, no huge empty card space! */}
             <div
               className={`h-72 sm:h-80 rounded-xl flex items-center justify-center p-6 border border-slate-200/80 dark:border-slate-800 transition-all relative overflow-hidden ${canvasBg === 'gradient'
-                  ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950'
+                  ? 'bg-linear-to-br from-slate-950 via-slate-900 to-indigo-950'
                   : canvasBg === 'dark'
                     ? 'bg-slate-950'
                     : canvasBg === 'light'
@@ -871,7 +960,6 @@ export const DesignAssetsWorkspace: React.FC = () => {
                       : 'bg-checkerboard'
                 }`}
             >
-              {/* Subtle ambient light for gradient mode */}
               {canvasBg === 'gradient' && (
                 <>
                   <div className="absolute top-8 left-8 w-28 h-28 bg-cyan-500/20 rounded-full blur-2xl pointer-events-none" />
@@ -879,37 +967,70 @@ export const DesignAssetsWorkspace: React.FC = () => {
                 </>
               )}
 
-              {/* The Styled Canvas Element containing Active Asset */}
+              {/* RENDER TARGET: The shadow is applied directly to the graphic or its snug glass badge */}
               <div
-                style={stageCardStyle}
-                className="relative z-10 p-5 rounded-2xl flex flex-col items-center justify-center gap-3 transition-all duration-300 max-w-[220px] w-full"
+                style={{ transform: `scale(${canvasScale})` }}
+                className="transition-transform duration-200 flex items-center justify-center"
               >
-                <div
-                  style={{ transform: `scale(${canvasScale})` }}
-                  className="w-20 h-20 flex items-center justify-center transition-transform"
-                >
-                  {activeAsset ? (
-                    <img
-                      src={activeAssetDataUri}
-                      alt={activeAsset.name}
-                      className="max-w-full max-h-full object-contain filter drop-shadow-xs"
-                    />
+                {activeAsset ? (
+                  shadowMode === 'shadow' ? (
+                    shadowTarget === 'contour' && applyShadowToCanvas ? (
+                      /* Direct Contour Drop Shadow on graphic with 0 container box! */
+                      <img
+                        src={activeAssetDataUri}
+                        alt={activeAsset.name}
+                        style={{ filter: dropShadowCss }}
+                        className="w-32 h-32 sm:w-36 sm:h-36 object-contain transition-all duration-200"
+                      />
+                    ) : (
+                      /* Tight Rounded Box Shadow (Snug frame, 0 extra padding) */
+                      <div
+                        style={
+                          applyShadowToCanvas
+                            ? {
+                              boxShadow: shadowResult.css.replace('box-shadow: ', '').replace(';', ''),
+                              backgroundColor: canvasBg === 'light' ? '#ffffff' : '#0f172a',
+                            }
+                            : {}
+                        }
+                        className="rounded-2xl p-0 transition-all duration-200 overflow-hidden"
+                      >
+                        <img
+                          src={activeAssetDataUri}
+                          alt={activeAsset.name}
+                          className="w-32 h-32 sm:w-36 sm:h-36 object-contain"
+                        />
+                      </div>
+                    )
                   ) : (
-                    <ImageIcon className="w-12 h-12 text-slate-400" />
-                  )}
-                </div>
-                <div className="text-center w-full min-w-0">
-                  <span className="font-semibold text-xs text-slate-900 dark:text-slate-100 truncate block">
-                    {activeAsset?.name || 'Asset'}
-                  </span>
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-mono">
-                    {applyShadowToCanvas
-                      ? shadowMode === 'shadow'
-                        ? dw.boxShadowApplied
-                        : dw.glassApplied
-                      : dw.rawCanvasAsset}
-                  </span>
-                </div>
+                    /* Snug Frosted Glass Tile (Hugs the graphic with chosen tight padding, no giant empty card!) */
+                    <div
+                      style={
+                        applyShadowToCanvas
+                          ? {
+                            padding: `${glassPadding}px`,
+                            backgroundColor: `rgba(${parseInt(glassConfig.bgColor.slice(1, 3), 16) || 255}, ${parseInt(glassConfig.bgColor.slice(3, 5), 16) || 255
+                              }, ${parseInt(glassConfig.bgColor.slice(5, 7), 16) || 255}, ${glassConfig.bgOpacity})`,
+                            backdropFilter: `blur(${glassConfig.blur}px)`,
+                            WebkitBackdropFilter: `blur(${glassConfig.blur}px)`,
+                            border: `${glassConfig.borderWidth}px solid rgba(${parseInt(glassConfig.borderColor.slice(1, 3), 16) || 255
+                              }, ${parseInt(glassConfig.borderColor.slice(3, 5), 16) || 255}, ${parseInt(glassConfig.borderColor.slice(5, 7), 16) || 255
+                              }, ${glassConfig.borderOpacity})`,
+                          }
+                          : { padding: `${glassPadding}px` }
+                      }
+                      className="rounded-2xl transition-all duration-200 flex items-center justify-center shadow-lg"
+                    >
+                      <img
+                        src={activeAssetDataUri}
+                        alt={activeAsset.name}
+                        className="w-28 h-28 sm:w-32 sm:h-32 object-contain"
+                      />
+                    </div>
+                  )
+                ) : (
+                  <ImageIcon className="w-16 h-16 text-slate-400" />
+                )}
               </div>
             </div>
 
@@ -1278,7 +1399,7 @@ export const DesignAssetsWorkspace: React.FC = () => {
 
           {/* --- TAB 2: CSS SHADOW & GLASSMORPHISM STUDIO --- */}
           {activeToolTab === 'css-shadow' && (
-            <div className="p-6 rounded-2xl bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 shadow-sm space-y-5 transition-colors duration-200 animate-in fade-in duration-200">
+            <div className="p-6 rounded-2xl bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 shadow-sm space-y-5 transition-colors animate-in fade-in duration-200">
               {/* Mode Switcher & Presets Selector */}
               <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-200 dark:border-slate-800">
                 <div className="flex items-center gap-2">
@@ -1328,6 +1449,65 @@ export const DesignAssetsWorkspace: React.FC = () => {
                   ))}
                 </select>
               </div>
+
+              {/* TARGET APPLICATION SELECTOR: Zero gap / Direct contour vs Tight box / Glass padding */}
+              {shadowMode === 'shadow' ? (
+                <div className="space-y-2 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200/80 dark:border-slate-800/80">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-slate-700 dark:text-slate-300">{dw.shadowTargetLabel}</span>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShadowTarget('contour')}
+                      className={`px-3 py-2 rounded-lg text-xs font-semibold text-left transition-all cursor-pointer ${shadowTarget === 'contour'
+                          ? 'bg-cyan-500 text-slate-950 shadow-xs'
+                          : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100'
+                        }`}
+                    >
+                      {dw.shadowTypeContour}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setShadowTarget('box')}
+                      className={`px-3 py-2 rounded-lg text-xs font-semibold text-left transition-all cursor-pointer ${shadowTarget === 'box'
+                          ? 'bg-cyan-500 text-slate-950 shadow-xs'
+                          : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100'
+                        }`}
+                    >
+                      {dw.shadowTypeBox}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-2 p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200/80 dark:border-slate-800/80">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-slate-700 dark:text-slate-300">{dw.glassPaddingLabel}</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setGlassPadding(8)}
+                      className={`px-3 py-2 rounded-lg text-xs font-semibold text-center transition-all cursor-pointer ${glassPadding === 8
+                          ? 'bg-cyan-500 text-slate-950 shadow-xs'
+                          : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100'
+                        }`}
+                    >
+                      {dw.tightPadding}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setGlassPadding(16)}
+                      className={`px-3 py-2 rounded-lg text-xs font-semibold text-center transition-all cursor-pointer ${glassPadding === 16
+                          ? 'bg-cyan-500 text-slate-950 shadow-xs'
+                          : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100'
+                        }`}
+                    >
+                      {dw.balancedPadding}
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Sliders Grid */}
               {shadowMode === 'shadow' ? (
@@ -1387,21 +1567,22 @@ export const DesignAssetsWorkspace: React.FC = () => {
                       />
                     </div>
 
-                    {/* Spread */}
+                    {/* Spread (only active in Box Shadow mode) */}
                     <div className="space-y-1 text-xs">
                       <div className="flex justify-between text-slate-600 dark:text-slate-400">
                         <span>{t.cssShadowTool.spreadRadius}</span>
                         <span className="font-mono text-cyan-600 dark:text-cyan-400 font-bold">
-                          {shadowConfig.spread}px
+                          {shadowTarget === 'contour' ? 'Contour' : `${shadowConfig.spread}px`}
                         </span>
                       </div>
                       <input
                         type="range"
                         min="-30"
                         max="40"
+                        disabled={shadowTarget === 'contour'}
                         value={shadowConfig.spread}
                         onChange={(e) => setShadowConfig({ ...shadowConfig, spread: Number(e.target.value) })}
-                        className="w-full accent-cyan-500 cursor-pointer"
+                        className="w-full accent-cyan-500 disabled:opacity-30 cursor-pointer"
                       />
                     </div>
                   </div>
@@ -1439,17 +1620,19 @@ export const DesignAssetsWorkspace: React.FC = () => {
                       />
                     </div>
 
-                    <div className="flex items-end pb-1">
-                      <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700 dark:text-slate-300">
-                        <input
-                          type="checkbox"
-                          checked={shadowConfig.inset}
-                          onChange={(e) => setShadowConfig({ ...shadowConfig, inset: e.target.checked })}
-                          className="w-4 h-4 rounded text-cyan-500 accent-cyan-500"
-                        />
-                        <span>{t.cssShadowTool.insetShadow}</span>
-                      </label>
-                    </div>
+                    {shadowTarget === 'box' && (
+                      <div className="flex items-end pb-1">
+                        <label className="flex items-center gap-2 cursor-pointer text-xs font-semibold text-slate-700 dark:text-slate-300">
+                          <input
+                            type="checkbox"
+                            checked={shadowConfig.inset}
+                            onChange={(e) => setShadowConfig({ ...shadowConfig, inset: e.target.checked })}
+                            className="w-4 h-4 rounded text-cyan-500 accent-cyan-500"
+                          />
+                          <span>{t.cssShadowTool.insetShadow}</span>
+                        </label>
+                      </div>
+                    )}
                   </div>
                 </div>
               ) : (
@@ -1608,17 +1791,23 @@ export const DesignAssetsWorkspace: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => {
-                      const code =
-                        shadowCodeTab === 'css'
-                          ? shadowMode === 'shadow'
+                      const code = shadowMode === 'shadow'
+                        ? shadowTarget === 'contour'
+                          ? shadowCodeTab === 'css'
+                            ? `filter: ${dropShadowCss};`
+                            : shadowCodeTab === 'tailwind'
+                              ? dropShadowTailwind
+                              : `<img src="${activeAsset?.name || 'asset.svg'}" alt="Graphic" className="${dropShadowTailwind}" />`
+                          : shadowCodeTab === 'css'
                             ? shadowResult.css
-                            : glassResult.css
-                          : shadowCodeTab === 'tailwind'
-                            ? shadowMode === 'shadow'
+                            : shadowCodeTab === 'tailwind'
                               ? shadowResult.tailwind
-                              : glassResult.tailwind
-                            : `<div className="${shadowMode === 'shadow' ? shadowResult.tailwind : glassResult.tailwind
-                            } p-6 rounded-2xl">\n  <img src="${activeAsset?.name || 'asset.svg'}" />\n</div>`;
+                              : `<div className="${shadowResult.tailwind} inline-block rounded-2xl overflow-hidden">\n  <img src="${activeAsset?.name || 'asset.svg'}" alt="Graphic" />\n</div>`
+                        : shadowCodeTab === 'css'
+                          ? glassResult.css
+                          : shadowCodeTab === 'tailwind'
+                            ? glassResult.tailwind
+                            : `<div className="${glassResult.tailwind} p-3 rounded-2xl inline-flex items-center justify-center">\n  <img src="${activeAsset?.name || 'asset.svg'}" alt="Graphic" />\n</div>`;
                       handleCopy(code, 'shadow-export');
                     }}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-semibold transition-colors cursor-pointer"
@@ -1639,17 +1828,23 @@ export const DesignAssetsWorkspace: React.FC = () => {
 
                 <pre className="p-3.5 rounded-xl bg-slate-950 text-cyan-400 font-mono text-xs overflow-x-auto max-h-36 border border-slate-800 leading-relaxed scrollbar-thin">
                   <code>
-                    {shadowCodeTab === 'css'
-                      ? shadowMode === 'shadow'
-                        ? shadowResult.css
-                        : glassResult.css
-                      : shadowCodeTab === 'tailwind'
-                        ? shadowMode === 'shadow'
-                          ? shadowResult.tailwind
-                          : glassResult.tailwind
-                        : `<div className="${shadowMode === 'shadow' ? shadowResult.tailwind : glassResult.tailwind
-                        } p-6 rounded-2xl">\n  <img src="${activeAsset?.name || 'asset.svg'}" alt="${activeAsset?.name || 'Asset'
-                        }" className="w-20 h-20 object-contain" />\n</div>`}
+                    {shadowMode === 'shadow'
+                      ? shadowTarget === 'contour'
+                        ? shadowCodeTab === 'css'
+                          ? `filter: ${dropShadowCss};`
+                          : shadowCodeTab === 'tailwind'
+                            ? dropShadowTailwind
+                            : `<img src="${activeAsset?.name || 'asset.svg'}" alt="Graphic" className="${dropShadowTailwind}" />`
+                        : shadowCodeTab === 'css'
+                          ? shadowResult.css
+                          : shadowCodeTab === 'tailwind'
+                            ? shadowResult.tailwind
+                            : `<div className="${shadowResult.tailwind} inline-block rounded-2xl overflow-hidden">\n  <img src="${activeAsset?.name || 'asset.svg'}" alt="Graphic" />\n</div>`
+                      : shadowCodeTab === 'css'
+                        ? glassResult.css
+                        : shadowCodeTab === 'tailwind'
+                          ? glassResult.tailwind
+                          : `<div className="${glassResult.tailwind} p-3 rounded-2xl inline-flex items-center justify-center">\n  <img src="${activeAsset?.name || 'asset.svg'}" alt="Graphic" />\n</div>`}
                   </code>
                 </pre>
               </div>
@@ -1670,7 +1865,7 @@ export const DesignAssetsWorkspace: React.FC = () => {
 
           {/* --- TAB 3: IMAGE CONVERTER & COMPRESSOR --- */}
           {activeToolTab === 'image-converter' && (
-            <div className="p-6 rounded-2xl bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 shadow-sm space-y-5 transition-colors duration-200 animate-in fade-in duration-200">
+            <div className="p-6 rounded-2xl bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 shadow-sm space-y-5 transition-colors animate-in fade-in duration-200">
               <div className="flex items-center justify-between flex-wrap gap-2 pb-4 border-b border-slate-200 dark:border-slate-800">
                 <div>
                   <h3 className="font-bold text-slate-900 dark:text-slate-100 text-sm flex items-center gap-2">

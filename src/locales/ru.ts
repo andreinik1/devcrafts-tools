@@ -520,8 +520,14 @@ export const ru: typeof en = {
     lightBg: "Светлый",
     gridBg: "Сетка",
     rawCanvasAsset: "Исходный ассет холста",
-    boxShadowApplied: "Тень применена",
-    glassApplied: "Стекломорфизм применен"
+    boxShadowApplied: "Тень наложена на графику",
+    glassApplied: "Стекломорфизм применен",
+    shadowTargetLabel: "Объект наложения тени",
+    shadowTypeContour: "По контуру графики (Drop Shadow)",
+    shadowTypeBox: "По контуру рамки (Box Shadow)",
+    glassPaddingLabel: "Отступ рамки стекла",
+    tightPadding: "Компактный (8px)",
+    balancedPadding: "Умеренный (16px)"
   },
   apiWorkspace: {
     seoTitle: "API и данные: JSON, TypeScript и мок-утилиты",

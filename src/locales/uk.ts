@@ -520,8 +520,14 @@ export const uk: typeof en = {
     lightBg: "Світлий",
     gridBg: "Сітка",
     rawCanvasAsset: "Вихідний асет полотна",
-    boxShadowApplied: "Тінь застосовано",
-    glassApplied: "Скломорфізм застосовано"
+    boxShadowApplied: "Тінь накладено на графіку",
+    glassApplied: "Скломорфізм застосовано",
+    shadowTargetLabel: "Об'єкт накладення тіні",
+    shadowTypeContour: "За контуром графіки (Drop Shadow)",
+    shadowTypeBox: "За контуром рамки (Box Shadow)",
+    glassPaddingLabel: "Відступ рамки скла",
+    tightPadding: "Компактний (8px)",
+    balancedPadding: "Помірний (16px)"
   },
   apiWorkspace: {
     seoTitle: "API та дані: JSON, TypeScript та мок-утиліти",

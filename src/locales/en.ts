@@ -518,8 +518,14 @@ export const en = {
     lightBg: "Light",
     gridBg: "Grid",
     rawCanvasAsset: "Raw Canvas Asset",
-    boxShadowApplied: "Box Shadow Applied",
-    glassApplied: "Glassmorphism Applied"
+    boxShadowApplied: "Shadow Applied to Graphic",
+    glassApplied: "Glassmorphism Applied",
+    shadowTargetLabel: "Shadow Target",
+    shadowTypeContour: "Graphic Silhouette (Drop Shadow)",
+    shadowTypeBox: "Tight Box (Box Shadow)",
+    glassPaddingLabel: "Glass Frame Padding",
+    tightPadding: "Snug (8px)",
+    balancedPadding: "Framed (16px)"
   },
   apiWorkspace: {
     seoTitle: "API & Data Tools: JSON, TypeScript & Mocks",
