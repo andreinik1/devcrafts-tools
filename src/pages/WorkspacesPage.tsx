@@ -97,7 +97,7 @@ export const WorkspacesPage: React.FC = () => {
     return (
         <div className="space-y-8">
             {/* Main Tool Component */}
-            <div className="min-h-112.5]">{renderToolComponent()}</div>
+            <div className="min-h-[450px]">{renderToolComponent()}</div>
 
             {/* SEO Article & Sidebar Layout */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
