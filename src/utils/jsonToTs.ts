@@ -17,7 +17,7 @@ function capitalize(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-function getTypeScriptType(val: any, keyName: string, interfaces: string[], options: JsonToTsOptions): string {
+function getTypeScriptType(val: unknown, keyName: string, interfaces: string[], options: JsonToTsOptions): string {
   if (val === null) return 'any';
   if (val === undefined) return 'undefined';
 
@@ -35,14 +35,14 @@ function getTypeScriptType(val: any, keyName: string, interfaces: string[], opti
 
   if (type === 'object') {
     const interfaceName = capitalize(keyName);
-    generateInterface(val, interfaceName, interfaces, options);
+    generateInterface(val as Record<string, unknown>, interfaceName, interfaces, options);
     return interfaceName;
   }
 
   return 'any';
 }
 
-function generateInterface(obj: Record<string, any>, name: string, interfaces: string[], options: JsonToTsOptions) {
+function generateInterface(obj: Record<string, unknown>, name: string, interfaces: string[], options: JsonToTsOptions) {
   const prefix = options.exportTypes ? 'export ' : '';
   const lines: string[] = [];
 
@@ -63,7 +63,7 @@ function generateInterface(obj: Record<string, any>, name: string, interfaces: s
   interfaces.push(lines.join('\n'));
 }
 
-function getZodSchema(val: any, keyName: string, zodSchemas: string[], rootName: string): string {
+function getZodSchema(val: unknown, keyName: string, zodSchemas: string[], rootName: string): string {
   if (val === null || val === undefined) return 'z.any()';
 
   const type = typeof val;
@@ -133,12 +133,12 @@ export function convertJsonToTsAndZod(jsonString: string, options: JsonToTsOptio
       zodCode,
       isValidJson: true,
     };
-  } catch (err: any) {
+  } catch (err: unknown) {
     return {
       tsCode: '',
       zodCode: '',
       isValidJson: false,
-      errorMessage: err?.message || 'Invalid JSON syntax',
+      errorMessage: err instanceof Error ? err.message : 'Invalid JSON syntax',
     };
   }
 }

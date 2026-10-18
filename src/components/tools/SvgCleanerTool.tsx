@@ -169,7 +169,7 @@ export const SvgCleanerTool: React.FC = () => {
               value={inputSvg}
               onChange={(e) => setInputSvg(e.target.value)}
               rows={8}
-              className="w-full font-mono text-xs bg-slate-900 dark:bg-slate-950 border border-slate-700 dark:border-slate-800 rounded-xl p-4 text-slate-100 focus:border-cyan-500 outline-none resize-none overflow-x-auto"
+              className="w-full font-mono text-xs bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-4 text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:border-cyan-500 outline-none resize-none overflow-x-auto transition-colors"
               placeholder="<svg ...></svg>"
             />
           </div>

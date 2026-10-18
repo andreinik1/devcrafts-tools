@@ -97,9 +97,9 @@ export const JsonToTsTool: React.FC = () => {
             value={inputJson}
             onChange={(e) => setInputJson(e.target.value)}
             rows={14}
-            className={`w-full font-mono text-xs bg-slate-900 dark:bg-slate-950 border rounded-xl p-4 text-slate-100 outline-none resize-none overflow-x-auto transition-colors ${
+            className={`w-full font-mono text-xs bg-slate-50 dark:bg-slate-950 border rounded-xl p-4 text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 outline-none resize-none overflow-x-auto transition-colors ${
               result.isValidJson
-                ? 'border-slate-700 dark:border-slate-800 focus:border-cyan-500'
+                ? 'border-slate-200 dark:border-slate-800 focus:border-cyan-500'
                 : 'border-rose-500 focus:border-rose-500'
             }`}
             placeholder='{ "key": "value" }'

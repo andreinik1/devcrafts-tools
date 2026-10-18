@@ -251,7 +251,7 @@ export const OpenGraphGeneratorTool: React.FC = () => {
               {activePreviewTab === 'facebook' && (
                 /* Facebook / LinkedIn / Slack Card */
                 <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 overflow-hidden shadow-lg transition-all">
-                  <div className="aspect-[1.91/1] w-full bg-slate-950 overflow-hidden relative">
+                  <div className="aspect-[1.91/1] w-full bg-slate-100 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 overflow-hidden relative">
                     {config.imageUrl ? (
                       <img
                         src={config.imageUrl}
@@ -262,7 +262,7 @@ export const OpenGraphGeneratorTool: React.FC = () => {
                         }}
                       />
                     ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center text-slate-500 text-xs">
+                      <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 text-xs">
                         <Share2 className="w-8 h-8 mb-1" />
                         <span>1200 × 630 Open Graph Image</span>
                       </div>
@@ -285,7 +285,7 @@ export const OpenGraphGeneratorTool: React.FC = () => {
               {activePreviewTab === 'twitter' && (
                 /* Twitter Summary Large Image Card */
                 <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 overflow-hidden shadow-lg transition-all">
-                  <div className="aspect-2/1 w-full bg-slate-950 overflow-hidden relative">
+                  <div className="aspect-2/1 w-full bg-slate-100 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 overflow-hidden relative">
                     {config.imageUrl ? (
                       <img
                         src={config.imageUrl}

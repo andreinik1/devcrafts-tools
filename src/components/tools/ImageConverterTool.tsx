@@ -241,18 +241,18 @@ export const ImageConverterTool: React.FC = () => {
 
             {/* Savings Banner */}
             {conversionResult && (
-              <div className="p-4 rounded-xl bg-slate-900 text-slate-100 border border-slate-800 flex flex-wrap items-center justify-between gap-4">
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-emerald-500/20 text-emerald-400">
+                  <div className="p-2 rounded-lg bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">
                     <TrendingDown className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="text-xs text-slate-400 uppercase font-semibold">
+                    <div className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold">
                       {t.imageConverterTool.savingsLabel}
                     </div>
                     <div className="text-sm font-bold font-mono">
                       {conversionResult.savingsPercentage > 0 ? (
-                        <span className="text-emerald-400">
+                        <span className="text-emerald-600 dark:text-emerald-400">
                           {t.imageConverterTool.reducedBy.replace(
                             '{percent}',
                             `${conversionResult.savingsPercentage}%`
@@ -261,7 +261,7 @@ export const ImageConverterTool: React.FC = () => {
                           {formatBytes(conversionResult.convertedSize)})
                         </span>
                       ) : (
-                        <span className="text-amber-400">
+                        <span className="text-amber-600 dark:text-amber-400">
                           {formatBytes(conversionResult.originalSize)} →{' '}
                           {formatBytes(conversionResult.convertedSize)} (+
                           {Math.abs(conversionResult.savingsPercentage)}%)
@@ -283,7 +283,7 @@ export const ImageConverterTool: React.FC = () => {
                   <button
                     type="button"
                     onClick={handleReset}
-                    className="p-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all cursor-pointer"
+                    className="p-2.5 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all cursor-pointer border border-slate-300/60 dark:border-slate-700/60"
                     title="Upload another image"
                   >
                     <RefreshCw className="w-4 h-4" />
@@ -296,17 +296,17 @@ export const ImageConverterTool: React.FC = () => {
           {/* Side-by-Side Comparison */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Original Preview */}
-            <div className="p-5 rounded-2xl bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 space-y-3 shadow-sm">
+            <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3 shadow-sm">
               <div className="flex items-center justify-between text-xs font-semibold uppercase text-slate-600 dark:text-slate-400">
                 <span>{t.imageConverterTool.originalTitle}</span>
                 {selectedFile && (
-                  <span className="font-mono text-[11px] text-slate-500">
+                  <span className="font-mono text-[11px] text-slate-500 dark:text-slate-400">
                     {formatBytes(selectedFile.size)}
                   </span>
                 )}
               </div>
 
-              <div className="aspect-video w-full rounded-xl bg-slate-950 border border-slate-800 overflow-hidden flex items-center justify-center p-2 relative group">
+              <div className="aspect-video w-full rounded-xl bg-checkerboard border border-slate-200 dark:border-slate-800 overflow-hidden flex items-center justify-center p-2 relative group shadow-inner">
                 <img
                   src={originalUrl}
                   alt="Original Preview"
@@ -314,7 +314,7 @@ export const ImageConverterTool: React.FC = () => {
                 />
               </div>
 
-              <div className="text-xs font-mono text-slate-500 dark:text-slate-400 space-y-1">
+              <div className="text-xs font-mono text-slate-600 dark:text-slate-400 space-y-1">
                 <div className="truncate">File: {selectedFile?.name}</div>
                 <div>Type: {selectedFile?.type || 'Image'}</div>
                 {conversionResult && (
@@ -324,7 +324,7 @@ export const ImageConverterTool: React.FC = () => {
             </div>
 
             {/* Converted Preview */}
-            <div className="p-5 rounded-2xl bg-white/80 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 space-y-3 shadow-sm">
+            <div className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-3 shadow-sm">
               <div className="flex items-center justify-between text-xs font-semibold uppercase text-slate-600 dark:text-slate-400">
                 <span>{t.imageConverterTool.convertedTitle}</span>
                 {conversionResult && (
@@ -334,7 +334,7 @@ export const ImageConverterTool: React.FC = () => {
                 )}
               </div>
 
-              <div className="aspect-video w-full rounded-xl bg-slate-950 border border-slate-800 overflow-hidden flex items-center justify-center p-2 relative">
+              <div className="aspect-video w-full rounded-xl bg-checkerboard border border-slate-200 dark:border-slate-800 overflow-hidden flex items-center justify-center p-2 relative shadow-inner">
                 {isProcessing ? (
                   <div className="flex flex-col items-center gap-2 text-cyan-400">
                     <RefreshCw className="w-8 h-8 animate-spin" />

@@ -217,12 +217,12 @@ export const PxToRemTool: React.FC = () => {
               <span className="text-xs text-slate-600 dark:text-slate-400 font-medium block mb-1">
                 {t.pxToRemTool.clampFormula}
               </span>
-              <div className="flex items-center gap-2 p-3 rounded-xl bg-slate-900 dark:bg-slate-950 border border-slate-700 dark:border-slate-800 font-mono text-xs text-cyan-400 dark:text-cyan-300">
+              <div className="flex items-center gap-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 font-mono text-xs text-cyan-700 dark:text-cyan-300">
                 <span className="flex-1 overflow-x-auto font-mono whitespace-nowrap">{fluidResult.clampFormula}</span>
                 <button
                   type="button"
                   onClick={() => copyToClipboard(fluidResult.clampFormula)}
-                  className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 cursor-pointer shrink-0"
+                  className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-500/20 cursor-pointer shrink-0"
                 >
                   <Copy className="w-3.5 h-3.5" />
                 </button>
@@ -233,12 +233,12 @@ export const PxToRemTool: React.FC = () => {
               <span className="text-xs text-slate-600 dark:text-slate-400 font-medium block mb-1">
                 {t.pxToRemTool.tailwindClass}
               </span>
-              <div className="flex items-center gap-2 p-3 rounded-xl bg-slate-900 dark:bg-slate-950 border border-slate-700 dark:border-slate-800 font-mono text-xs text-purple-400 dark:text-purple-300">
+              <div className="flex items-center gap-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 font-mono text-xs text-purple-700 dark:text-purple-300">
                 <span className="flex-1 overflow-x-auto font-mono whitespace-nowrap">{fluidResult.tailwindClass}</span>
                 <button
                   type="button"
                   onClick={() => copyToClipboard(fluidResult.tailwindClass)}
-                  className="p-1.5 rounded-lg bg-purple-500/10 text-purple-400 hover:bg-purple-500/20 cursor-pointer shrink-0"
+                  className="p-1.5 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400 hover:bg-purple-500/20 cursor-pointer shrink-0"
                 >
                   <Copy className="w-3.5 h-3.5" />
                 </button>
